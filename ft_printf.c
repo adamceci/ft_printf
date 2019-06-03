@@ -12,8 +12,6 @@
 
 #include <stdio.h>
 
-#include <stdarg.h>
-#include "libft.h"
 #include "ft_printf.h"
 
 int	conversion_char(char c)
@@ -69,45 +67,53 @@ int	get_numberi(const char *str, int *i)
 	return (value);
 }
 
-void	parse(char *str, va_list args, t_print *datas)
+void fill_data(char *str, int *i, t_print *datas)
+{
+	if (str[*i] == '-')
+		datas->minus_f = 1;
+	else if (str[*i] == '+')
+		datas->plus_f = 1;
+	else if (str[*i] == '#')
+		datas->hash_f = 1;
+	else if (str[*i] == '0')
+		datas->zero_f = 1;
+	else if (str[*i] == ' ')
+		datas->space_f = 1;
+	else if (ft_isdigit(str[*i]))
+	{
+		datas->min_field = get_numberi((const char*)&str[*i], i);
+		(*i)--;
+	}
+	else if (str[*i] == '.')
+	{
+		(*i)++;
+		datas->precision = get_numberi((const char*)&str[*i], i);
+		(*i)--;
+	}
+	else if (conversion_char(str[*i]))
+		datas->conversion = str[*i];
+	// else
+	// 	gerer le cas de %10]5d par exemple ! --> remove everything between
+	//	'%' and the first invalid char.
+}
+
+void	parse(char *str, t_print *datas)
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '-')
-			datas->minus_f = 1;
-		else if (str[i] == '+')
-			datas->plus_f = 1;
-		else if (str[i] == '#')
-			datas->hash_f = 1;
-		else if (str[i] == '0')
-			datas->zero_f = 1;
-		else if (str[i] == ' ')
-			datas->space_f = 1;
-		else if (ft_isdigit(str[i]))
-		{
-			datas->min_field = get_numberi((const char*)&str[i], &i);
-			i--;
-		}
-		else if (str[i] == '.')
-		{
-			i++;
-			datas->precision = get_numberi((const char*)&str[i], &i);
-			i--;
-		}
-		else if (conversion_char(str[i]))
-			datas->conversion = str[i];
+		fill_data(str, &i, datas);
 		i++;
 	}
 }
 
-/*
+
 void	translate(char *str)
 {
 	char	*s;
-	char * (*f[255]) (va_list args, t_print data);
+	char	*(*f[255])(va_list args, t_print data);
 
 	// i = dernier
 	s = f[t_print.coversion](args,
@@ -119,7 +125,6 @@ void	translate(char *str)
 
 	ft_putstr(s);
 }
-*/
 
 void init_struct(t_print *datas)
 {
@@ -153,7 +158,6 @@ int ft_printf(const char *format, ...)
 		return (0);
 	s1 = ft_strnew(0);
 	s2 = NULL;
-	// datas.init_str = (char*)format;
 	va_start(args, format);
 	i = 0;
 	while (*format)
@@ -166,12 +170,11 @@ int ft_printf(const char *format, ...)
 			{
 				init_struct(&datas);
 				s2 = conv_infos((char**)&format);
-				parse(s2, args, &datas);
+				parse(s2, &datas);
 				printf("conv_infos = %s\n", s2);
 				print_data(datas);
 				s1 = ft_strjoin_free(s1, s2, 1, 1);
-				// format++;
-//			translate(s2);
+				translate(s2);
 			}
 		}
 	va_end(args);
@@ -184,7 +187,7 @@ int main()
 //		printf("%s\n", argv[1]);
 	// ft_printf("salut toi % +10d, puis %c", 5, 'g');
 	// ft_printf("|%-+.20d|\n\n", 12);
-	// ft_printf("4567 |%-10]5d| plip\n", 12);
+	ft_printf("4567 |%-10]5d| plip\n", 12);
 	// ft_printf("4567 |%10]5d| plip\n", 12);
 	// ft_printf("|%10.5d|\n", -12);
 	// ft_printf("|%10d|\n", -12);
@@ -192,14 +195,14 @@ int main()
 	// ft_printf("|%-10.5d|\n", -12);
 	// ft_printf("|%-010.5d|\n", -12);
 
-	printf("|%-+.20d|\n\n", 12);
-	printf("4567 |%-10]5d| plip\n", 12);
-	printf("4567 |%10]5d| plip\n", 12);
-	printf("|%10.5d|\n", -12);
-	printf("|%10d|\n", -12);
-	printf("|%010d|\n", -12);
-	printf("|%-10.5d|\n", -12);
-	printf("|%-010.5d|\n", -12);
-//	printf("%+ d", 5);
+	// printf("|%-+.20d|\n\n", 12);
+	// printf("4567 |%-10]5d| plip\n", 12);
+	// printf("4567 |%10]5d| plip\n", 12);
+	// printf("|%10.5d|\n", -12);
+	// printf("|%10d|\n", -12);
+	// printf("|%010d|\n", -12);
+	// printf("|%-10.5d|\n", -12);
+	// printf("|%-010.5d|\n", -12);
+	// ft_printf("%d\n", "5");
 	return (0);
 }

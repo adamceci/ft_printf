@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
+#include <stdarg.h>
+
 typedef struct	s_print
 {
 	int			minus_f;
