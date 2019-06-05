@@ -6,7 +6,7 @@
 /*   By: aceciora <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/15 12:39:51 by aceciora          #+#    #+#             */
-/*   Updated: 2019/05/30 16:07:57 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/03 13:26:01 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,6 @@ void				ft_swap(int *a, int *b);
 int					get_next_line(const int fd, char **line);
 void				free_2d_array(char **array, unsigned int size);
 int					count_until(const char *str, char c);
+int					get_numberi(const char *str, int *i);
 
 #endif

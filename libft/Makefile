@@ -6,7 +6,7 @@
 #    By: vbrazhni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/05 13:39:23 by vbrazhni          #+#    #+#              #
-#    Updated: 2019/05/17 13:26:58 by aceciora         ###   ########.fr        #
+#    Updated: 2019/06/03 13:25:39 by aceciora         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -89,7 +89,8 @@ SRCS_LIST = ft_memset.c			\
 			ft_swap.c			\
 			get_next_line.c		\
 			free_2d_array.c		\
-			count_until.c
+			count_until.c		\
+			get_numberi.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 
 OBJS_DIR = objects/
