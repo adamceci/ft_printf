@@ -6,7 +6,7 @@
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 17:19:09 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/05 19:27:44 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/10 17:09:04 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,77 +95,95 @@ void	parse(char *str, t_print *datas)
 	}
 }
 
+void	min_field(t_print *datas, char *str)
+{
+	size_t	len;
+
+	len = ft_strlen(str);
+	if (datas->min_field > len)
+	{
+		
+	}
+	else if (datas->min_field = 0)
+	{
+
+	}
+}
+
 char	*conv_X(t_print *datas, va_list args)
 {
 	// TODO
-	printf("hey X");
+	// printf("hey X\n");
 	return (NULL);
 }
 
 char	*conv_c(t_print *datas, va_list args)
 {
 	// TODO
-	printf("hey c");
+	// printf("hey c\n");
 	return (NULL);
 }
 
 char	*conv_d(t_print *datas, va_list args)
 {
 	// TODO
-	printf("hey d");
+	// printf("hey d\n");
 	int		value;
 	char	*str;
 
 	value = va_arg(args, int);
 	str = ft_itoa(value);
+	min_field(datas, str);
+	// if (datas->minus_f)
+	// 	ft_strjoin_free("-", str, 0, 1);
 	return (str);
 }
 
 char	*conv_f(t_print *datas, va_list args)
 {
-	printf("hey f");
+	// printf("hey f\n");
 	// TODO
 	return (NULL);
 }
 
 char	*conv_i(t_print *datas, va_list args)
 {
-	printf("hey i");
+	// printf("hey i\n");
 	// TODO
 	return (NULL);
 }
 
 char	*conv_o(t_print *datas, va_list args)
 {
-	printf("hey o");
+	// printf("hey o\n");
 	// TODO
 	return (NULL);
 }
 
 char	*conv_p(t_print *datas, va_list args)
 {
-	printf("hey p");
+	// printf("hey p\n");
 	// TODO
 	return (NULL);
 }
 
 char	*conv_s(t_print *datas, va_list args)
 {
-	printf("hey s");
+	// printf("hey s\n");
 	// TODO
 	return (NULL);
 }
 
 char	*conv_u(t_print *datas, va_list args)
 {
-	printf("hey u");
+	// printf("hey u\n");
 	// TODO
 	return (NULL);
 }
 
 char	*conv_x(t_print *datas, va_list args)
 {
-	printf("hey x");
+	// printf("hey x\n");
 	// TODO
 	return (NULL);
 }
@@ -261,11 +279,11 @@ int ft_printf(const char *format, ...)
 	while (*format)
 	{
 		i = count_until(format, '%');
-		// /!\ IF NO '%' --> COUNT_UNTIL RETURNS 0 !!
 		s1 = ft_strjoin_free(s1, ft_strsub(format, 0, i), 1, 1);
 		format += i;
-		if (*format++ == '%')
+		if (*format == '%')
 		{
+			format++;
 			init_struct(&datas);
 			s2 = conv_infos((char**)&format);
 			parse(s2, &datas);
@@ -273,19 +291,17 @@ int ft_printf(const char *format, ...)
 			flag_priorities(&datas);
 			s2 = translate(&datas, args);
 			s1 = ft_strjoin_free(s1, s2, 1, 1);
-			printf("format = %s\n", format);
 		}
 	}
 	va_end(args);
-	ft_putstr(s1);
+	ft_putstr((const char*)s1);
 	return (ft_strlen(s1));
 }
 
 int main()
 {
-	// if (argc == 2)
-	ft_printf("pourquoi %d %s\n", 5, "hujiw");
-	// ft_printf("salut toi % +10d, puis %c", 5, 'g');
+	printf("%-d\n", 10);
+	ft_printf("%-d\n", 10);
 	//
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   count_until.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aceciora <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/17 13:24:05 by aceciora          #+#    #+#             */
-/*   Updated: 2019/05/17 13:28:42 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/10 17:05:41 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ int	count_until(const char *string, char c)
 		i = 0;
 		while (string[i] && string[i] != c)
 			i++;
-		if (string[i] == c)
-			return (i);
+		return (i);
 	}
 	return (0);
 }
