@@ -95,18 +95,21 @@ void	parse(char *str, t_print *datas)
 	}
 }
 
-void	min_field(t_print *datas, char *str)
+void	min_field(t_print *datas, char **str)
 {
+	char	*s;
 	size_t	len;
 
-	len = ft_strlen(str);
-	if (datas->min_field > len)
+	s = ft_strnew(0);
+	len = ft_strlen(*str);
+	if (datas->min_field != -1)
 	{
-		
-	}
-	else if (datas->min_field = 0)
-	{
-
+		while (len < datas->min_field)
+		{
+			s = ft_strjoin_free(" ", s, 0, 1);
+			len++;
+		}
+		*str = ft_strjoin_free(s, *str, 1, 1);
 	}
 }
 
@@ -133,7 +136,7 @@ char	*conv_d(t_print *datas, va_list args)
 
 	value = va_arg(args, int);
 	str = ft_itoa(value);
-	min_field(datas, str);
+	min_field(datas, &str);
 	// if (datas->minus_f)
 	// 	ft_strjoin_free("-", str, 0, 1);
 	return (str);
@@ -300,8 +303,8 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-	printf("%-d\n", 10);
-	ft_printf("%-d\n", 10);
+	printf("%10d\n", 10);
+	ft_printf("%10d\n", 10);
 	//
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
