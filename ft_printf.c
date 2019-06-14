@@ -35,24 +35,6 @@ char	*conv_infos(char **str)
 	return (s);
 }
 
-/*
-   void	ft_d(va_list args, t_print *datas)
-   {
-   int		val;
-
-   val = va_arg(args, int);
-   printf("val = %d\n", val);
-   }
-
-   void	ft_c(va_list args, t_print *datas)
-   {
-   char	val;
-
-   val = va_arg(args, int);
-   printf("val = %c\n", val);
-   }
-   */
-
 void fill_data(char *str, int *i, t_print *datas)
 {
 	if (str[*i] == '-')
@@ -67,14 +49,15 @@ void fill_data(char *str, int *i, t_print *datas)
 		datas->space_f = 1;
 	else if (ft_isdigit(str[*i]))
 	{
-		datas->min_field = get_numberi((const char*)&str[*i], i);
+		datas->field = get_numberi((const char*)&str[*i], i);
 		(*i)--;
 	}
 	else if (str[*i] == '.')
 	{
 		(*i)++;
-		datas->precision = get_numberi((const char*)&str[*i], i);
+		datas->preci = get_numberi((const char*)&str[*i], i);
 		(*i)--;
+		(datas->preci < 0) ? (datas->preci = -1) : (datas->preci);
 	}
 	else if (conversion_char(str[*i]))
 		datas->conversion = str[*i];
@@ -95,99 +78,166 @@ void	parse(char *str, t_print *datas)
 	}
 }
 
-void	min_field(t_print *datas, char **str)
+int		get_tot_len(t_print *datas, char *str)
 {
-	char	*s;
-	size_t	len;
+	int	str_len;
+	int	tot_len;
+	int	plus;
 
-	s = ft_strnew(0);
-	len = ft_strlen(*str);
-	if (datas->min_field != -1)
+	str_len = ft_strlen(str);
+	tot_len = str_len;
+	if (str_len < datas->field)
+		tot_len = datas->field;
+	if (tot_len < datas->preci)
 	{
-		while (len < datas->min_field)
-		{
-			s = ft_strjoin_free(" ", s, 0, 1);
-			len++;
-		}
-		*str = ft_strjoin_free(s, *str, 1, 1);
+		tot_len = datas->preci;
+		if (datas->plus_f)
+			tot_len++;
 	}
+	return (tot_len);
 }
 
 char	*conv_X(t_print *datas, va_list args)
 {
-	// TODO
-	// printf("hey X\n");
 	return (NULL);
 }
 
 char	*conv_c(t_print *datas, va_list args)
 {
-	// TODO
-	// printf("hey c\n");
 	return (NULL);
+}
+
+int		get_nb_zeros(t_print *datas, int len_str)
+{
+	if (datas->preci > len_str)
+		return (datas->preci - len_str);
+	return (0);
+}
+
+void	put_spaces(char **f_str, int nb_spaces)
+{
+	int	i;
+
+	i = 0;
+	while (i < nb_spaces)
+	{
+		**(f_str) = ' ';
+		(*f_str)++;
+		i++;
+	}
+}
+
+void 	put_plus(char **f_str, int plus)
+{
+	if (plus)
+	{
+		**f_str = '+';
+		(*f_str)++;
+	}
+}
+
+void 	put_zeros(char **f_str, int nb_zeros)
+{
+	int	i;
+
+	i = 0;
+	while (i < nb_zeros)
+	{
+		**f_str = '0';
+		(*f_str)++;
+		i++;
+	}
+}
+
+void 	put_value(char **f_str, char *str, int len_str)
+{
+	int	i;
+
+	i = 0;
+	while (i < len_str)
+	{
+		**f_str = str[i];
+		(*f_str)++;
+		i++;
+	}
+}
+
+void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
+{
+	int	nb_zeros;
+	int	nb_spaces;
+	int	len_str;
+	int	i;
+
+	len_str = ft_strlen(str);
+	nb_zeros = get_nb_zeros(datas, len_str);
+	nb_spaces = (len_f_str - nb_zeros - len_str - datas->plus_f);
+	i = 0;
+	if (datas->minus_f)
+	{
+		put_plus(&f_str, datas->plus_f);
+		put_zeros(&f_str, nb_zeros);
+		put_value(&f_str, str, len_str);
+		put_spaces(&f_str, nb_spaces);
+	}
+	else
+	{
+		put_spaces(&f_str, nb_spaces);
+		put_plus(&f_str, datas->plus_f);
+		put_zeros(&f_str, nb_zeros);
+		put_value(&f_str, str, len_str);
+	}
 }
 
 char	*conv_d(t_print *datas, va_list args)
 {
-	// TODO
-	// printf("hey d\n");
-	int		value;
 	char	*str;
+	char	*f_str;
+	int		len_f_str;
+	int		value;
 
 	value = va_arg(args, int);
 	str = ft_itoa(value);
-	min_field(datas, &str);
-	// if (datas->minus_f)
-	// 	ft_strjoin_free("-", str, 0, 1);
-	return (str);
+	len_f_str = get_tot_len(datas, str);
+	f_str = ft_strnew(len_f_str);
+	if (datas->field <= ft_strlen(str))
+		datas->zero_f = 0;
+	fill(datas, f_str, str, len_f_str);
+	return (f_str);
 }
 
 char	*conv_f(t_print *datas, va_list args)
 {
-	// printf("hey f\n");
-	// TODO
 	return (NULL);
 }
 
 char	*conv_i(t_print *datas, va_list args)
 {
-	// printf("hey i\n");
-	// TODO
 	return (NULL);
 }
 
 char	*conv_o(t_print *datas, va_list args)
 {
-	// printf("hey o\n");
-	// TODO
 	return (NULL);
 }
 
 char	*conv_p(t_print *datas, va_list args)
 {
-	// printf("hey p\n");
-	// TODO
 	return (NULL);
 }
 
 char	*conv_s(t_print *datas, va_list args)
 {
-	// printf("hey s\n");
-	// TODO
 	return (NULL);
 }
 
 char	*conv_u(t_print *datas, va_list args)
 {
-	// printf("hey u\n");
-	// TODO
 	return (NULL);
 }
 
 char	*conv_x(t_print *datas, va_list args)
 {
-	// printf("hey x\n");
-	// TODO
 	return (NULL);
 }
 
@@ -221,8 +271,8 @@ void init_struct(t_print *datas)
 	datas->hash_f = 0;
 	datas->zero_f = 0;
 	datas->space_f = 0;
-	datas->min_field = -1;
-	datas->precision = -1;
+	datas->field = -1;
+	datas->preci = -1;
 	datas->conversion = '0';
 }
 
@@ -230,7 +280,7 @@ void print_data(t_print datas)
 {
 	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
 					datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
-					datas.min_field, datas.precision, datas.conversion);
+					datas.field, datas.preci, datas.conversion);
 	printf("\n");
 }
 
@@ -251,16 +301,17 @@ void flag_priorities(t_print *datas)
 		datas->zero_f = 0;
 		datas->space_f = 0;
 		if (datas->conversion == 'c' || datas->conversion == 'p')
-			datas->precision = -1;
+			datas->preci = -1;
 	}
 	if (numeric_conversion(datas->conversion))
 	{
-		if (datas->zero_f && datas->precision != -1)
-			datas->zero_f = 0;
-		if (datas->minus_f && datas->zero_f)
-			datas->zero_f = 0;
+		if (datas->zero_f && datas->preci != -1)
+			if (datas->preci != -1 || datas->minus_f)
+				datas->zero_f = 0;
 		if (datas->plus_f && datas->space_f)
 			datas->space_f = 0;
+		if (datas->field <= datas->preci)
+			datas->field = -1;							// A verifier avec conv s c p
 	}
 }
 
@@ -303,8 +354,8 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-	printf("%10d\n", 10);
-	ft_printf("%10d\n", 10);
+	printf("%+-45.21dyes\n", 22);
+	ft_printf("%+-45.21dyes\n", 22);
 	//
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);

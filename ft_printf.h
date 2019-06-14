@@ -20,8 +20,8 @@ typedef struct	s_print
 	int			hash_f;
 	int			zero_f;
 	int			space_f;
-	int			min_field;
-	int			precision;
+	int			field;
+	int			preci;
 	char		*modifier;
 	char		conversion;
 	char		*(*f_ptr[256])(struct s_print *datas, va_list args);
