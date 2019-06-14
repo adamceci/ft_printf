@@ -1,31 +1,5 @@
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "libft.h"
 
-/*
-int		*convert_base(int value, int base, int *i)
-{
-	int		*rest;
-	int		num;
-	int		size;
-
-	num = value;
-	while (num > 0)
-	{
-		*i++;
-		size++;
-		num /= base;
-	}
-	rest = (int*)malloc(sizeof(*rest) * size);
-	while (value > 0)
-	{
-		rest[size - 1] = num % base;
-		num / base;
-		size--;
-	}
-	return (rest);
-}
-*/
 char	*ft_itoa_base(int value, int base)
 {
 	char	*str;
@@ -63,13 +37,4 @@ char	*ft_itoa_base(int value, int base)
 	if (sign)
 		str[0] = '-';
 	return (str);
-}
-
-int		main()
-{
-	char	*str;
-
-	str = ft_itoa_base(10540, 15);
-	printf("%s\n", str);
-	return (0);
 }
