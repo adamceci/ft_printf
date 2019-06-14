@@ -90,7 +90,8 @@ SRCS_LIST = ft_memset.c			\
 			get_next_line.c		\
 			free_2d_array.c		\
 			count_until.c		\
-			get_numberi.c
+			get_numberi.c		\
+			ft_itoa_base.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 
 OBJS_DIR = objects/

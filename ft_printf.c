@@ -97,23 +97,6 @@ int		get_tot_len(t_print *datas, char *str)
 	return (tot_len);
 }
 
-char	*conv_X(t_print *datas, va_list args)
-{
-	return (NULL);
-}
-
-char	*conv_c(t_print *datas, va_list args)
-{
-	return (NULL);
-}
-
-int		get_nb_zeros(t_print *datas, int len_str)
-{
-	if (datas->preci > len_str)
-		return (datas->preci - len_str);
-	return (0);
-}
-
 void	put_spaces(char **f_str, int nb_spaces)
 {
 	int	i;
@@ -156,6 +139,7 @@ void 	put_value(char **f_str, char *str, int len_str)
 	i = 0;
 	while (i < len_str)
 	{
+	printf("str[%d] = %c\n", i, str[i]);
 		**f_str = str[i];
 		(*f_str)++;
 		i++;
@@ -167,12 +151,10 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 	int	nb_zeros;
 	int	nb_spaces;
 	int	len_str;
-	int	i;
 
 	len_str = ft_strlen(str);
-	nb_zeros = get_nb_zeros(datas, len_str);
+	nb_zeros = (datas->preci > len_str) ? (datas->preci - len_str) : (0);
 	nb_spaces = (len_f_str - nb_zeros - len_str - datas->plus_f);
-	i = 0;
 	if (datas->minus_f)
 	{
 		put_plus(&f_str, datas->plus_f);
@@ -189,12 +171,22 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 	}
 }
 
+char	*conv_X(t_print *datas, va_list args)
+{
+	return (NULL);
+}
+
+char	*conv_c(t_print *datas, va_list args)
+{
+	return (NULL);
+}
+
 char	*conv_d(t_print *datas, va_list args)
 {
-	char	*str;
-	char	*f_str;
-	int		len_f_str;
-	int		value;
+	char			*str;
+	char			*f_str;
+	int				len_f_str;
+	int				value;
 
 	value = va_arg(args, int);
 	str = ft_itoa(value);
@@ -213,12 +205,21 @@ char	*conv_f(t_print *datas, va_list args)
 
 char	*conv_i(t_print *datas, va_list args)
 {
-	return (NULL);
+	return (conv_d(datas, args));
 }
 
 char	*conv_o(t_print *datas, va_list args)
 {
-	return (NULL);
+	char			*str;
+	char			*f_str;
+	int				len_f_str;
+	unsigned int	value;
+
+	value = va_arg(args, unsigned int);
+	str = ft_itoa_base(value, 8);
+	len_f_str = get_tot_len(datas, str);
+	fill(datas, f_str, str, len_f_str);
+	return (f_str);
 }
 
 char	*conv_p(t_print *datas, va_list args)
@@ -354,8 +355,8 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-	printf("%+-45.21dyes\n", 22);
-	ft_printf("%+-45.21dyes\n", 22);
+	printf("%oyes\n", 22);
+	ft_printf("%oyes\n", 22);
 	//
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
