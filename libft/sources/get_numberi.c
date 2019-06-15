@@ -17,6 +17,8 @@ int	get_numberi(const char *str, int *i)
 	int	value;
 	int	cpt;
 
+	if (!ft_isdigit(str[0]))
+		return (0);
 	cpt = 0;
 	while (ft_isdigit(str[cpt]))
 		cpt++;

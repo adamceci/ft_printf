@@ -139,7 +139,6 @@ void 	put_value(char **f_str, char *str, int len_str)
 	i = 0;
 	while (i < len_str)
 	{
-	printf("str[%d] = %c\n", i, str[i]);
 		**f_str = str[i];
 		(*f_str)++;
 		i++;
@@ -154,6 +153,8 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 
 	len_str = ft_strlen(str);
 	nb_zeros = (datas->preci > len_str) ? (datas->preci - len_str) : (0);
+	if (datas->zero_f && datas->field != -1 && datas->preci == -1)
+		nb_zeros = datas->field - len_str;
 	nb_spaces = (len_f_str - nb_zeros - len_str - datas->plus_f);
 	if (datas->minus_f)
 	{
@@ -176,9 +177,27 @@ char	*conv_X(t_print *datas, va_list args)
 	return (NULL);
 }
 
+void	flag_prio_c(t_print *datas)
+{
+	if (datas->preci != -1)
+		datas->preci = -1;
+}
+
 char	*conv_c(t_print *datas, va_list args)
 {
-	return (NULL);
+	char	str;
+	char	*str_cpy;
+	char 	*f_str;
+	int		len_f_str;
+
+	flag_prio_c(datas);
+	str = va_arg(args, int);
+	str_cpy = ft_strnew(1);
+	ft_strncpy(str_cpy, &str, 1);
+	len_f_str = get_tot_len(datas, str_cpy);
+	f_str = ft_strnew(len_f_str);
+	fill(datas, f_str, str_cpy, len_f_str);
+	return (f_str);
 }
 
 char	*conv_d(t_print *datas, va_list args)
@@ -192,7 +211,7 @@ char	*conv_d(t_print *datas, va_list args)
 	str = ft_itoa(value);
 	len_f_str = get_tot_len(datas, str);
 	f_str = ft_strnew(len_f_str);
-	if (datas->field <= ft_strlen(str))
+	if (datas->field <= ft_strlen(str) && datas->zero_f)
 		datas->zero_f = 0;
 	fill(datas, f_str, str, len_f_str);
 	return (f_str);
@@ -208,6 +227,14 @@ char	*conv_i(t_print *datas, va_list args)
 	return (conv_d(datas, args));
 }
 
+void	flag_prio_o(t_print *datas)
+{
+	if (datas->space_f)
+		datas->space_f = 0;
+	if (datas->plus_f)
+		datas->plus_f = 0;
+}
+
 char	*conv_o(t_print *datas, va_list args)
 {
 	char			*str;
@@ -215,9 +242,13 @@ char	*conv_o(t_print *datas, va_list args)
 	int				len_f_str;
 	unsigned int	value;
 
+	flag_prio_o(datas);
 	value = va_arg(args, unsigned int);
 	str = ft_itoa_base(value, 8);
 	len_f_str = get_tot_len(datas, str);
+	f_str = ft_strnew(len_f_str);
+	if (datas->field <= ft_strlen(str) && datas->zero_f)
+		datas->zero_f = 0;
 	fill(datas, f_str, str, len_f_str);
 	return (f_str);
 }
@@ -227,9 +258,40 @@ char	*conv_p(t_print *datas, va_list args)
 	return (NULL);
 }
 
+void	rewrite_str(t_print *datas, char *str)
+{
+	int	i;
+
+	if (datas->preci >= ft_strlen(str))
+		datas->preci = 0;
+	else
+	{
+		i = 0;
+		while (datas->preci > 0)
+		{
+			i++;
+			datas->preci--;
+		}
+		str[i] = '\0';
+	}
+}
+
 char	*conv_s(t_print *datas, va_list args)
 {
-	return (NULL);
+	char	*str;
+	char	*str_copy;
+	char	*f_str;
+	int		len_f_str;
+
+	str = va_arg(args, char*);
+	str_copy = ft_strdup((const char*)str);
+	rewrite_str(datas, str_copy);
+	len_f_str = get_tot_len(datas, str_copy);
+	f_str = ft_strnew(len_f_str);
+	if (datas->field <= ft_strlen(str) && datas->zero_f)
+		datas->zero_f = 0;
+	fill(datas, f_str, str_copy, len_f_str);
+	return (f_str);
 }
 
 char	*conv_u(t_print *datas, va_list args)
@@ -355,8 +417,8 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-	printf("%oyes\n", 22);
-	ft_printf("%oyes\n", 22);
+	printf("%+5.1cyes\n", 'e');
+	ft_printf("%+5.1cyes\n", 'e');
 	//
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
