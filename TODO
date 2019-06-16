@@ -14,7 +14,7 @@
 9. "%%" --> print "%"
 	condition in ft_printf when a '%' is found ?
 10. function for the modifiers (maybe change char *modifiers to char modifiers[2] ?
-11. if a malloc doesn't work what should printf return ? 0 ? add condition in ft_printf
+11. if a malloc doesn't work what should printf return ? -1 ? add condition in ft_printf
 12. do Makefile
 
 to compile : gcc ft_printf.c init.c -I ./libft/includes ./libft/libft.a
