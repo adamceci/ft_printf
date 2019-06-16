@@ -14,6 +14,12 @@
 
 #include "ft_printf.h"
 
+// PROTEGER TOUS LES MALLOCS (STRSUB STRDUP STRNEW ITOA/LLTOA/...)
+// NORME ITOA
+// BONUS : %ld --> type long
+// Gerer le cas "%03d", -5 --> print 0-5 plutot que -05
+// ADD HEADER DANS LES FICHIERS
+
 int	conversion_char(char c)
 {
 	if (c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'o' ||
@@ -172,9 +178,33 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 	}
 }
 
+void	flag_prio_x(t_print *datas)
+{
+	if (datas->plus_f)
+		datas->plus_f = 0;
+	if (datas->space_f)
+		datas->space_f = 0;
+}
+
 char	*conv_X(t_print *datas, va_list args)
 {
-	return (NULL);
+	char *str;
+	char *f_str;
+	int len_f_str;
+	unsigned int value;
+
+	flag_prio_x(datas);
+	value = va_arg(args, unsigned int);
+	if (!(str = ft_lltoa_base(value, 16)))
+		return (NULL);
+	len_f_str = get_tot_len(datas, str);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
+	// if (datas->field <= ft_strlen(str) && datas->zero_f)
+	// 	datas->zero_f = 0;
+	fill(datas, f_str, str, len_f_str);
+	free(str);
+	return (f_str);
 }
 
 void	flag_prio_c(t_print *datas)
@@ -186,18 +216,28 @@ void	flag_prio_c(t_print *datas)
 char	*conv_c(t_print *datas, va_list args)
 {
 	char	str;
-	char	*str_cpy;
+	char	*str_copy;
 	char 	*f_str;
 	int		len_f_str;
 
 	flag_prio_c(datas);
 	str = va_arg(args, int);
-	str_cpy = ft_strnew(1);
-	ft_strncpy(str_cpy, &str, 1);
-	len_f_str = get_tot_len(datas, str_cpy);
-	f_str = ft_strnew(len_f_str);
-	fill(datas, f_str, str_cpy, len_f_str);
+	if (!(str_copy = ft_strnew(1)))
+		return (NULL);
+	ft_strncpy(str_copy, &str, 1);
+	len_f_str = get_tot_len(datas, str_copy);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
+	fill(datas, f_str, str_copy, len_f_str);
+	free(str_copy);
 	return (f_str);
+}
+
+int		deal_neg_value(t_print *datas, int value, char *str)
+{
+	if (*str == '-' && datas->zero_f && datas->field > ft_strlen(str))
+		return (1);
+	return (0);
 }
 
 char	*conv_d(t_print *datas, va_list args)
@@ -206,14 +246,20 @@ char	*conv_d(t_print *datas, va_list args)
 	char			*f_str;
 	int				len_f_str;
 	int				value;
+	int				neg;
 
+	neg = 0;
 	value = va_arg(args, int);
-	str = ft_itoa(value);
+	if (!(str = ft_itoa(value)))
+		return (NULL);
+	neg = deal_neg_value(datas, value, str);	// a faire !!
 	len_f_str = get_tot_len(datas, str);
-	f_str = ft_strnew(len_f_str);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
 	if (datas->field <= ft_strlen(str) && datas->zero_f)
 		datas->zero_f = 0;
 	fill(datas, f_str, str, len_f_str);
+	free(str);
 	return (f_str);
 }
 
@@ -244,12 +290,15 @@ char	*conv_o(t_print *datas, va_list args)
 
 	flag_prio_o(datas);
 	value = va_arg(args, unsigned int);
-	str = ft_itoa_base(value, 8);
+	if (!(str = ft_lltoa_base(value, 8)))
+		return (NULL);
 	len_f_str = get_tot_len(datas, str);
-	f_str = ft_strnew(len_f_str);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
 	if (datas->field <= ft_strlen(str) && datas->zero_f)
 		datas->zero_f = 0;
 	fill(datas, f_str, str, len_f_str);
+	free(str);
 	return (f_str);
 }
 
@@ -263,7 +312,7 @@ void	rewrite_str(t_print *datas, char *str)
 	int	i;
 
 	if (datas->preci >= ft_strlen(str))
-		datas->preci = 0;
+		datas->preci = -1;
 	else
 	{
 		i = 0;
@@ -284,24 +333,59 @@ char	*conv_s(t_print *datas, va_list args)
 	int		len_f_str;
 
 	str = va_arg(args, char*);
-	str_copy = ft_strdup((const char*)str);
+	if (!(str_copy = ft_strdup((const char*)str)))
+		return (NULL);
 	rewrite_str(datas, str_copy);
 	len_f_str = get_tot_len(datas, str_copy);
-	f_str = ft_strnew(len_f_str);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
 	if (datas->field <= ft_strlen(str) && datas->zero_f)
 		datas->zero_f = 0;
 	fill(datas, f_str, str_copy, len_f_str);
+	free(str_copy);
 	return (f_str);
 }
 
 char	*conv_u(t_print *datas, va_list args)
 {
-	return (NULL);
+	char			*str;
+	char			*f_str;
+	int				len_f_str;
+	unsigned int	value;
+
+	value = va_arg(args, unsigned int);
+	if (!(str = ft_lltoa(value)))
+		return (NULL);
+	len_f_str = get_tot_len(datas, str);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
+	// if (datas->field <= ft_strlen(str) && datas->zero_f)
+	// 	datas->zero_f = 0;
+	fill(datas, f_str, str, len_f_str);
+	free(str);
+	return (f_str);
+}
+
+void	lowercase(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		str[i] = ft_tolower(str[i]);
+		i++;
+	}
 }
 
 char	*conv_x(t_print *datas, va_list args)
 {
-	return (NULL);
+	char *f_str;
+	
+	if (!(f_str = conv_X(datas, args)))
+		return (NULL);
+	lowercase(f_str);
+	return (f_str);
 }
 
 void	init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args))
@@ -325,26 +409,6 @@ char	*translate(t_print *datas, va_list args)
 
 	str = datas->f_ptr[datas->conversion](datas, args);
 	return (str);
-}
-
-void init_struct(t_print *datas)
-{
-	datas->minus_f = 0;
-	datas->plus_f = 0;
-	datas->hash_f = 0;
-	datas->zero_f = 0;
-	datas->space_f = 0;
-	datas->field = -1;
-	datas->preci = -1;
-	datas->conversion = '0';
-}
-
-void print_data(t_print datas)
-{
-	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
-					datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
-					datas.field, datas.preci, datas.conversion);
-	printf("\n");
 }
 
 int	numeric_conversion(char c)
@@ -374,7 +438,7 @@ void flag_priorities(t_print *datas)
 		if (datas->plus_f && datas->space_f)
 			datas->space_f = 0;
 		if (datas->field <= datas->preci)
-			datas->field = -1;							// A verifier avec conv s c p
+			datas->field = -1;
 	}
 }
 
@@ -417,14 +481,14 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-	printf("%+5.1cyes\n", 'e');
-	ft_printf("%+5.1cyes\n", 'e');
+	ft_printf("%010d", -5);
+	// printf("%01uyes\n", 429495);
+	// ft_printf("%01uyes\n", 429495);
 	//
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
 	// ft_printf("4567 |%10]5d| plip\n", 12);
 	// ft_printf("|%10.5d|\n", -12);
-	// ft_printf("|%10d|\n", -12);
 	// ft_printf("|%010d|\n", -12);
 	// ft_printf("|%-10.5d|\n", -12);
 	// ft_printf("|%-010.5d|\n", -12);
@@ -432,18 +496,17 @@ int main()
 	// printf("|%-+.20d|\n\n", 12);
 	// printf("4567 |%-10]5d| plip\n", 12);
 	// printf("4567 |%10]5d| plip\n", 12);
+
 	// printf("|%10.5d|\n", -12);
-	// printf("|%10d|\n", -12);
+	// ft_printf("|%10.5d|\n", -12);
+	// printf("\n");
 	// printf("|%010d|\n", -12);
+	// ft_printf("|%010d|\n", -12);
+	// printf("\n");
 	// printf("|%-10.5d|\n", -12);
+	// ft_printf("|%-10.5d|\n", -12);
+	// printf("\n");
 	// printf("|%-010.5d|\n", -12);
-	//
-	// printf("%p\n", "c");
-	// printf("%+p\n", "heeey");
-	// printf("%#p\n", "heeey");
-	// printf("%0p\n", "heeey");
-	// printf("% p\n", "heeey");
-	// printf("%040p\n", "heeey");
-	// printf("%.1p\n", "heeey");
+	// ft_printf("|%-010.5d|\n", -12);
 	return (0);
 }

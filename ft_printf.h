@@ -26,3 +26,5 @@ typedef struct	s_print
 	char		conversion;
 	char		*(*f_ptr[256])(struct s_print *datas, va_list args);
 }				t_print;
+
+void			init_struct(t_print *datas);
