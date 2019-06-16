@@ -12,23 +12,23 @@
 
 #include "libft.h"
 
-void	change_base(int value, int base, char *str, int i)
+void	change_base(long long n, int base, char *str, int i)
 {
 	int	rest;
 
-	while (value > 0)
+	while (n > 0)
 	{
-		rest = value % base;
+		rest = n % base;
 		if (rest >= 0 && rest <= 9)
 			str[i - 1] = rest + '0';
 		else
 			str[i - 1] = rest - 10 + 'A';
-		value /= base;
+		n /= base;
 		i--;
 	}
 }
 
-char	*ft_itoa_base(int value, int base)
+char	*ft_itoa_base(int n, int base)
 {
 	char	*str;
 	int		i;
@@ -37,13 +37,13 @@ char	*ft_itoa_base(int value, int base)
 
 	sign = 0;
 	i = 0;
-	if (base == 10 && value < 0)
+	if (base == 10 && n < 0)
 	{
 		sign = 1;
-		value *= -1;
+		n *= -1;
 		i++;
 	}
-	num = value;
+	num = n;
 	while (num > 0)
 	{
 		i++;
@@ -51,7 +51,7 @@ char	*ft_itoa_base(int value, int base)
 	}
 	str = (char*)malloc(sizeof(*str) * i + 1);
 	str[i] = '\0';
-	change_base(value, base, str, i);
+	change_base(n, base, str, i);
 	if (sign)
 		str[0] = '-';
 	return (str);

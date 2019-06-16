@@ -66,6 +66,9 @@ SRCS_LIST = ft_memset.c			\
 			ft_strtrim.c		\
 			ft_strsplit.c		\
 			ft_itoa.c			\
+			ft_itoa_base.c		\
+			ft_lltoa.c			\
+			ft_lltoa_base.c		\
 			ft_putchar.c		\
 			ft_putstr.c			\
 			ft_putendl.c		\
@@ -90,8 +93,7 @@ SRCS_LIST = ft_memset.c			\
 			get_next_line.c		\
 			free_2d_array.c		\
 			count_until.c		\
-			get_numberi.c		\
-			ft_itoa_base.c
+			get_numberi.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 
 OBJS_DIR = objects/
