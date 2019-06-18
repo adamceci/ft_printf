@@ -1,20 +1,15 @@
 1. p conversion
 2. f conversion
-3. case : "%05d", -5 --> print 000-5 instead of -0005. (int neg in conv_d)
-4. norm in all files (including libft files such as lltoa and llota_base + 42 headers)
-5. BONUS : %ld --> type long
-6. do different files
+3. norm in all files
+4. BONUS : %ld --> type long
+5. do different files
 	like : 	numeric_base_conversions.c (d, u, i)
-			numeric_fload_conversions.c (f, and later : e, E, g, G)
+			numeric_float_conversions.c (f, and later : e, E, g, G)
 			change_base_conversions.c (x, X, o)
 			adress_conversions.c (p)
 			characters_conversions.c (s, c)
-7. check if the condition data->field <= ft_strlen && flag 0 in all conversions
-8. '#' flag
-9. "%%" --> print "%"
-	condition in ft_printf when a '%' is found ?
-10. function for the modifiers (maybe change char *modifiers to char modifiers[2] ?
-11. if a malloc doesn't work what should printf return ? -1 ? add condition in ft_printf
-12. do Makefile
-
+6. '#' flag
+7. function for the modifiers (maybe change char *modifiers to char modifiers[2] ?
+8. do Makefile
+9. Tout revoir --> free, exit, ...
 to compile : gcc ft_printf.c init.c -I ./libft/includes ./libft/libft.a
