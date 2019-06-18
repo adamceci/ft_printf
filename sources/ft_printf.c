@@ -96,7 +96,6 @@ void	parse(char *str, t_print *datas)
 int		get_tot_len(t_print *datas, char *str)
 {
 	int	tot_len;
-	int	plus;
 
 	tot_len = ft_strlen(str) + datas->neg;
 	if (tot_len < datas->field)
@@ -270,12 +269,12 @@ char	*conv_d(t_print *datas, va_list args)
 	free(str);
 	return (f_str);
 }
-
+/*
 char	*conv_f(t_print *datas, va_list args)
 {
 	return (NULL);
 }
-
+*/
 char	*conv_i(t_print *datas, va_list args)
 {
 	return (conv_d(datas, args));
@@ -307,17 +306,17 @@ char	*conv_o(t_print *datas, va_list args)
 	free(str);
 	return (f_str);
 }
-
+/*
 char	*conv_p(t_print *datas, va_list args)
 {
 	return (NULL);
 }
-
+*/
 void	rewrite_str(t_print *datas, char *str)
 {
 	int	i;
 
-	if (datas->preci >= ft_strlen(str))
+	if (datas->preci >= (int)ft_strlen(str))
 		datas->preci = -1;
 	else
 	{
@@ -386,10 +385,10 @@ void	init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args))
 	f_ptr[88] = &(conv_X);
 	f_ptr[99] = &(conv_c);
 	f_ptr[100] = &(conv_d);
-	f_ptr[102] = &(conv_f);
+	// f_ptr[102] = &(conv_f);
 	f_ptr[105] = &(conv_i);
 	f_ptr[111] = &(conv_o);
-	f_ptr[112] = &(conv_p);
+	// f_ptr[112] = &(conv_p);
 	f_ptr[115] = &(conv_s);
 	f_ptr[117] = &(conv_u);
 	f_ptr[120] = &(conv_x);
@@ -399,7 +398,7 @@ char	*translate(t_print *datas, va_list args)
 {
 	char	*str;
 
-	str = datas->f_ptr[datas->conversion](datas, args);
+	str = datas->f_ptr[(int)datas->conversion](datas, args);
 	return (str);
 }
 
