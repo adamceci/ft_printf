@@ -20,6 +20,14 @@
 // Gerer le cas "%03d", -5 --> print 0-5 plutot que -05
 // ADD HEADER DANS LES FICHIERS
 
+void print_data(t_print datas)
+{
+	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
+		   datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
+		   datas.field, datas.preci, datas.conversion);
+	printf("\n");
+}
+
 int	conversion_char(char c)
 {
 	if (c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'o' ||
@@ -82,6 +90,7 @@ void	parse(char *str, t_print *datas)
 		fill_data(str, &i, datas);
 		i++;
 	}
+	free(str);
 }
 
 int		get_tot_len(t_print *datas, char *str)
@@ -233,11 +242,26 @@ char	*conv_c(t_print *datas, va_list args)
 	return (f_str);
 }
 
-int		deal_neg_value(t_print *datas, int value, char *str)
+void	deal_neg_value(char *str, int len)
 {
-	if (*str == '-' && datas->zero_f && datas->field > ft_strlen(str))
-		return (1);
-	return (0);
+	printf("STR = %s\n", str);
+	int		i;
+
+	i = len;
+	while (!ft_isdigit(str[i - 1]))
+	{
+		printf("i = %d\n", i);
+		i--;
+	}
+	if (i == len)
+		i--;
+	while (ft_isdigit(str[i]))
+	{
+		printf("i = %d\n", i);
+		str[i] = str[i - 1];
+		i--;
+	}
+	str[i] = '-';
 }
 
 char	*conv_d(t_print *datas, va_list args)
@@ -252,7 +276,6 @@ char	*conv_d(t_print *datas, va_list args)
 	value = va_arg(args, int);
 	if (!(str = ft_itoa(value)))
 		return (NULL);
-	neg = deal_neg_value(datas, value, str);	// a faire !!
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
@@ -432,7 +455,7 @@ void flag_priorities(t_print *datas)
 	}
 	if (numeric_conversion(datas->conversion))
 	{
-		if (datas->zero_f && datas->preci != -1)
+		if (datas->zero_f)
 			if (datas->preci != -1 || datas->minus_f)
 				datas->zero_f = 0;
 		if (datas->plus_f && datas->space_f)
@@ -450,6 +473,8 @@ int ft_printf(const char *format, ...)
 	char    *s2;
 	int     i;
 
+	printf("format = %s\n", format);
+
 	if (!format)
 		return (0);
 	s1 = ft_strnew(0);
@@ -460,18 +485,23 @@ int ft_printf(const char *format, ...)
 	while (*format)
 	{
 		i = count_until(format, '%');
-		s1 = ft_strjoin_free(s1, ft_strsub(format, 0, i), 1, 1);
+		if (!(s1 = ft_strjoin_free(s1, ft_strsub(format, 0, i), 1, 1)))
+			return (-1);
 		format += i;
 		if (*format == '%')
 		{
 			format++;
 			init_struct(&datas);
-			s2 = conv_infos((char**)&format);
+			if (!(s2 = conv_infos((char**)&format)))
+			{
+				free(s1);
+				return (-1);
+			}
 			parse(s2, &datas);
-			free(s2);
 			flag_priorities(&datas);
 			s2 = translate(&datas, args);
-			s1 = ft_strjoin_free(s1, s2, 1, 1);
+			if (!(s1 = ft_strjoin_free(s1, s2, 1, 1)))
+				return (-1);
 		}
 	}
 	va_end(args);
@@ -481,7 +511,8 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-	ft_printf("%010d", -5);
+	// printf("%05d\n", -5);
+	// ft_printf("%05d\n", -5);
 	// printf("%01uyes\n", 429495);
 	// ft_printf("%01uyes\n", 429495);
 	//
@@ -503,8 +534,8 @@ int main()
 	// printf("|%010d|\n", -12);
 	// ft_printf("|%010d|\n", -12);
 	// printf("\n");
-	// printf("|%-10.5d|\n", -12);
-	// ft_printf("|%-10.5d|\n", -12);
+	ft_printf("|%-10.5d|\n", -12);
+	printf("|%-10.5d|\n", -12);
 	// printf("\n");
 	// printf("|%-010.5d|\n", -12);
 	// ft_printf("|%-010.5d|\n", -12);
