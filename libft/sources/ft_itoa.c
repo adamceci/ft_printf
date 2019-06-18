@@ -6,7 +6,7 @@
 /*   By: aceciora <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/04 14:50:26 by aceciora          #+#    #+#             */
-/*   Updated: 2018/07/04 14:50:28 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/18 16:39:58 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int		ft_count_chars(long long n)
 	return (nb_chars);
 }
 
-char		ft_fill_char(char *str, long long *n)
+char	ft_fill_char(char *str, long long *n)
 {
 	if (*n >= 10)
 	{
@@ -47,7 +47,7 @@ char		ft_fill_char(char *str, long long *n)
 	return (*str);
 }
 
-char			*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
 	char		*str;
 	int			nb_chars;

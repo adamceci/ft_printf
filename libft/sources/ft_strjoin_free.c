@@ -6,14 +6,14 @@
 /*   By: aceciora <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/02 10:45:04 by aceciora          #+#    #+#             */
-/*   Updated: 2018/10/02 15:51:22 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/18 16:37:20 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_strjoin_free(char const *s1, char const *s2, int free1,
-								int free2)
+char		*ft_strjoin_free(char const *s1, char const *s2,
+								int free1, int free2)
 {
 	size_t	length;
 	char	*str;
