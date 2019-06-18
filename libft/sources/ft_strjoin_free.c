@@ -21,17 +21,21 @@ char		*ft_strjoin_free(char const *s1, char const *s2, int free1,
 	if (s1 && s2)
 	{
 		length = ft_strlen(s1) + ft_strlen(s2);
-		str = ft_strnew(length);
-		if (str)
+		if (!(str = ft_strnew(length)))
 		{
-			ft_strcpy(str, s1);
-			ft_strcat(str, s2);
 			if (free1)
-				free((void*)s1);
+				free((void *)s1);
 			if (free2)
-				free((void*)s2);
-			return (str);
+				free((void *)s2);
+			return (NULL);
 		}
+		ft_strcpy(str, s1);
+		ft_strcat(str, s2);
+		if (free1)
+			free((void*)s1);
+		if (free2)
+			free((void*)s2);
+		return (str);
 	}
 	return (NULL);
 }
