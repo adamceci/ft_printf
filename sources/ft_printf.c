@@ -25,6 +25,7 @@ void print_data(t_print datas)
 	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
 		   datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
 		   datas.field, datas.preci, datas.conversion);
+	printf("modifier = %s\n", datas.modifier);
 	printf("\n");
 }
 
@@ -49,6 +50,29 @@ char	*conv_infos(char **str)
 	return (s);
 }
 
+int	is_mod(char c)
+{
+	if (c == 'l' || c == 'h')
+		return (1);
+	return (0);
+}
+
+void	get_mod(t_print *datas, char *str, int *i)
+{
+	if (str[*i + 1] == str[*i])
+	{
+		datas->modifier = ft_strnew(2);
+		datas->modifier[0] = str[*i];
+		datas->modifier[1] = str[*i + 1];
+		(*i)++;
+	}
+	else
+	{
+		datas->modifier = ft_strnew(1);
+		datas->modifier[0] = str[*i];
+	}
+}
+
 void fill_data(char *str, int *i, t_print *datas)
 {
 	if (str[*i] == '-')
@@ -63,7 +87,7 @@ void fill_data(char *str, int *i, t_print *datas)
 		datas->space_f = 1;
 	else if (ft_isdigit(str[*i]))
 	{
-		datas->field = get_numberi((const char*)&str[*i], i);
+		datas->field = get_numberi((const char *)&str[*i], i);
 		(*i)--;
 	}
 	else if (str[*i] == '.')
@@ -73,6 +97,8 @@ void fill_data(char *str, int *i, t_print *datas)
 		(*i)--;
 		(datas->preci < 0) ? (datas->preci = -1) : (datas->preci);
 	}
+	else if (is_mod(str[*i]))
+		get_mod(datas, &str[*i], i);
 	else if (conversion_char(str[*i]))
 		datas->conversion = str[*i];
 	// else
@@ -205,13 +231,13 @@ void	flag_prio_x(t_print *datas)
 
 char	*conv_X(t_print *datas, va_list args)
 {
-	char *str;
-	char *f_str;
-	int len_f_str;
-	unsigned int value;
+	char		*str;
+	char		*f_str;
+	int			len_f_str;
+	uintmax_t	value;
 
 	flag_prio_x(datas);
-	value = va_arg(args, unsigned int);
+	value = modifiers_o_u_x(datas, args);
 	if (!(str = ft_lltoa_base(value, 16)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
@@ -253,14 +279,14 @@ char	*conv_d(t_print *datas, va_list args)
 	char			*str;
 	char			*f_str;
 	int				len_f_str;
-	int				value;
+	intmax_t		value;
 
-	if ((value = va_arg(args, int)) < 0)
+	if ((value = modifiers_d_i(datas, args)) < 0)
 	{
 		value *= -1;
 		datas->neg = 1;
 	}
-	if (!(str = ft_itoa(value)))
+	if (!(str = ft_lltoa(value)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
@@ -269,12 +295,14 @@ char	*conv_d(t_print *datas, va_list args)
 	free(str);
 	return (f_str);
 }
+
 /*
 char	*conv_f(t_print *datas, va_list args)
 {
 	return (NULL);
 }
 */
+
 char	*conv_i(t_print *datas, va_list args)
 {
 	return (conv_d(datas, args));
@@ -293,10 +321,10 @@ char	*conv_o(t_print *datas, va_list args)
 	char			*str;
 	char			*f_str;
 	int				len_f_str;
-	unsigned int	value;
+	uintmax_t		value;
 
 	flag_prio_o(datas);
-	value = va_arg(args, unsigned int);
+	value = modifiers_o_u_x(datas, args);
 	if (!(str = ft_lltoa_base(value, 8)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
@@ -354,9 +382,9 @@ char	*conv_u(t_print *datas, va_list args)
 	char			*str;
 	char			*f_str;
 	int				len_f_str;
-	unsigned int	value;
+	uintmax_t		value;
 
-	value = va_arg(args, unsigned int);
+	value = modifiers_o_u_x(datas, args);
 	if (!(str = ft_lltoa(value)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
@@ -435,23 +463,20 @@ void flag_priorities(t_print *datas)
 
 int ft_printf(const char *format, ...)
 {
-	t_print	datas;
-	va_list args;
-	char    *s1;
-	char    *s2;
-	int     i;
+	t_print		datas;
+	va_list 	args;
+	t_strings	solve_strs;
+	int     	i;
 
 	if (!format)
 		return (0);
-	s1 = ft_strnew(0);
-	s2 = NULL;
 	va_start(args, format);
-	init_f_ptr(datas.f_ptr);
+	init_vars(&solve_strs, &datas);
 	i = 0;
 	while (*format)
 	{
 		i = count_until(format, '%');
-		if (!(s1 = ft_strjoin_free(s1, ft_strsub(format, 0, i), 1, 1)))
+		if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, ft_strsub(format, 0, i), 1, 1)))
 			return (-1);
 		format += i;
 		if (*format == '%')
@@ -459,34 +484,43 @@ int ft_printf(const char *format, ...)
 			format++;
 			if (*format == '%')
 			{
-				if (!(s1 = ft_strjoin_free(s1, "%", 1, 0)))
+				if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, "%", 1, 0)))
 					return (-1);
 				format++;
 			}
 			else
 			{
 				init_struct(&datas);
-				if (!(s2 = conv_infos((char**)&format)))
+				if (!(solve_strs.s2 = conv_infos((char**)&format)))
 				{
-					free(s1);
+					free(solve_strs.s1);
 					return (-1);
 				}
-				parse(s2, &datas);
+				parse(solve_strs.s2, &datas);
+				// print_data(datas);
 				flag_priorities(&datas);
-				s2 = translate(&datas, args);
-				if (!(s1 = ft_strjoin_free(s1, s2, 1, 1)))
+				solve_strs.s2 = translate(&datas, args);
+				if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, solve_strs.s2, 1, 1)))
 					return (-1);
 			}
 		}
 	}
 	va_end(args);
-	ft_putstr((const char*)s1);
-	return (ft_strlen(s1));
+	ft_putstr((const char*)solve_strs.s1);
+	return (ft_strlen(solve_strs.s1));
 }
 
 int main()
 {
-	
+	// printf("%lld\n", -10000000000000000000);
+	// ft_printf("%lld\n", -10000000000000000000);
+	// printf("%d\n", 2000000);
+	// ft_printf("%d\n", 2000000);
+	printf("%llu\n", 10000000000000000000);
+	ft_printf("%llu\n", 10000000000000000000);
+
+	// printf("p = %p\n", "salut");
+	// printf("x = %x\n", "salut");
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
 	// ft_printf("4567 |%10]5d| plip\n", 12);

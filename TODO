@@ -1,7 +1,7 @@
 1. p conversion
 2. f conversion
 3. norm in all files
-4. BONUS : %ld --> type long
+4. BONUS : %ld --> type long, faire modifier j
 5. do different files
 	like : 	numeric_base_conversions.c (d, u, i)
 			numeric_float_conversions.c (f, and later : e, E, g, G)
@@ -12,4 +12,4 @@
 7. function for the modifiers (maybe change char *modifiers to char modifiers[2] ?
 8. do Makefile
 9. Tout revoir --> free, exit, ...
-to compile : gcc ft_printf.c init.c -I ./libft/includes ./libft/libft.a
+to compile : gcc sources/ft_printf.c sources/init.c sources/modifiers.c -I ./includes/ -I ./libft/includes ./libft/libft.a
