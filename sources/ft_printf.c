@@ -238,7 +238,7 @@ char	*conv_X(t_print *datas, va_list args)
 
 	flag_prio_x(datas);
 	value = modifiers_o_u_x(datas, args);
-	if (!(str = ft_lltoa_base(value, 16)))
+	if (!(str = ft_uimttoa_base(value, 16)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
@@ -286,7 +286,7 @@ char	*conv_d(t_print *datas, va_list args)
 		value *= -1;
 		datas->neg = 1;
 	}
-	if (!(str = ft_lltoa(value)))
+	if (!(str = ft_imttoa(value)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
@@ -325,7 +325,7 @@ char	*conv_o(t_print *datas, va_list args)
 
 	flag_prio_o(datas);
 	value = modifiers_o_u_x(datas, args);
-	if (!(str = ft_lltoa_base(value, 8)))
+	if (!(str = ft_uimttoa_base(value, 8)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
@@ -385,7 +385,7 @@ char	*conv_u(t_print *datas, va_list args)
 	uintmax_t		value;
 
 	value = modifiers_o_u_x(datas, args);
-	if (!(str = ft_lltoa(value)))
+	if (!(str = ft_uimttoa_base(value, 10)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
@@ -516,8 +516,8 @@ int main()
 	// ft_printf("%lld\n", -10000000000000000000);
 	// printf("%d\n", 2000000);
 	// ft_printf("%d\n", 2000000);
-	printf("%llu\n", 10000000000000000000);
-	ft_printf("%llu\n", 10000000000000000000);
+	printf("%llu\n", 100000000000000000000);
+	ft_printf("%llu\n", 100000000000000000000);
 
 	// printf("p = %p\n", "salut");
 	// printf("x = %x\n", "salut");
