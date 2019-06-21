@@ -12,11 +12,11 @@
 
 #include "libft.h"
 
-char	*ft_lltoa_base(long long n, int base)
+char	*ft_uimttoa_base(uintmax_t n, int base)
 {
 	char		*str;
 	int			i;
-	long long	num;
+	uintmax_t	num;
 
 	num = n;
 	i = 0;

@@ -76,13 +76,18 @@ char				*ft_strjoin_free(char const *s1, char const *s2, int free1,
 char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
 char				*ft_itoa(int n);
-int					ft_count_chars(long long n);
-char				ft_fill_char (char *str, long long *n);
+int					ft_count_chars(intmax_t n);
+char				ft_fill_char (char *str, intmax_t *n);
 char				*ft_itoa_base(int n, int base);
 void				change_base(uintmax_t n, int base, char *str, int i);
+<<<<<<< HEAD
 char				*ft_lltoa(long long n);
 char				*ft_lltoa_base(long long n, int base);
 char				*ft_uimtoa_base(uintmax_t n, int base);
+=======
+char				*ft_imttoa(intmax_t n);
+char				*ft_uimttoa_base(uintmax_t n, int base);
+>>>>>>> modifiers
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
 void				ft_putendl(char const *s);

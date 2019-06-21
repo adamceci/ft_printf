@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-int		ft_count_chars(long long n)
+int		ft_count_chars(intmax_t n)
 {
 	int			nb_chars;
 
@@ -35,7 +35,7 @@ int		ft_count_chars(long long n)
 	return (nb_chars);
 }
 
-char	ft_fill_char(char *str, long long *n)
+char	ft_fill_char(char *str, intmax_t *n)
 {
 	if (*n >= 10)
 	{
@@ -53,9 +53,9 @@ char	*ft_itoa(int n)
 	int			nb_chars;
 	int			i;
 	int			sign;
-	long long	num;
+	intmax_t	num;
 
-	num = (long long)n;
+	num = (intmax_t)n;
 	nb_chars = ft_count_chars(num);
 	str = ft_strnew(nb_chars);
 	if (!str)
