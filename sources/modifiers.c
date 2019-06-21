@@ -14,7 +14,7 @@ intmax_t    modifiers_d_i(t_print *datas, va_list args)
         return (value = va_arg(args, long));
     else if (!ft_strcmp(datas->modifier, "ll"))
         return (value = va_arg(args, long long));
-    return (0); // faire un exit ?
+    return (-1);
 }
 
 uintmax_t   modifiers_o_u_x(t_print * datas, va_list args)
@@ -31,5 +31,5 @@ uintmax_t   modifiers_o_u_x(t_print * datas, va_list args)
         return (value = va_arg(args, unsigned long));
     else if (!ft_strcmp(datas->modifier, "ll"))
         return (value = va_arg(args, unsigned long long));
-    return (0); // faire un exit ?
+    return (-1);
 }
