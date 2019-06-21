@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   count_until.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/14 15:03:26 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/19 17:52:56 by apalaz           ###   ########.fr       */
+/*   Created: 2019/05/17 13:24:05 by aceciora          #+#    #+#             */
+/*   Updated: 2019/06/10 17:05:41 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include <stdarg.h>
-#include <inttypes.h>
-
-typedef struct	s_print
+int	count_until(const char *string, char c)
 {
-	int			minus_f;
-	int			plus_f;
-	int			hash_f;
-	int			zero_f;
-	int			space_f;
-	int			field;
-	int			preci;
-	char		*modifier;
-	char		conversion;
-	char		*(*f_ptr[256])(struct s_print *datas, va_list args);
-	int			neg;
-}				t_print;
+	int	i;
 
-void			init_struct(t_print *datas);
+	if (string)
+	{
+		i = 0;
+		while (string[i] && string[i] != c)
+			i++;
+		return (i);
+	}
+	return (0);
+}

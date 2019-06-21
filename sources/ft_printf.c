@@ -6,7 +6,7 @@
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 17:19:09 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/10 17:09:04 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/20 19:09:39 by apalaz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,12 +269,56 @@ char	*conv_d(t_print *datas, va_list args)
 	free(str);
 	return (f_str);
 }
-/*
+
+char	*ft_ftoa(long double value, t_print *datas)
+{
+	uintmax_t	n;
+	char		*str;
+	char		*final_str;
+
+	n = (uintmax_t)value;
+	value = value - n;
+	str = ft_strjoin(ft_lltoa(n), ".");
+	if (datas->preci == -1)
+		datas->preci = 6;
+	while(datas->preci > 0)
+	{
+		value = value * 10;
+		datas->preci = datas->preci -1;
+	}
+	n = (uintmax_t)value;
+	final_str = ft_strjoin_free(str, ft_lltoa(value), 1, 0);
+	return (final_str);
+}
+
+void	flag_prio_f(t_print *datas)
+{
+	if (datas->field)
+		datas->field = -1;
+	if (datas->minus_f)
+		datas->minus_f = 0;
+}
+
 char	*conv_f(t_print *datas, va_list args)
 {
-	return (NULL);
+	char			*str;
+	char			*f_str;
+	int len_f_str;
+	long double		value;
+
+	flag_prio_f(datas);
+	value = (long double)va_arg(args, double);
+	if(!(str = ft_ftoa(value, datas)))
+		return(NULL);
+	datas->preci = -1;
+	len_f_str = get_tot_len(datas, str);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
+	fill(datas, f_str, str, len_f_str);
+	free(str);
+	return (f_str);
 }
-*/
+
 char	*conv_i(t_print *datas, va_list args)
 {
 	return (conv_d(datas, args));
@@ -306,12 +350,41 @@ char	*conv_o(t_print *datas, va_list args)
 	free(str);
 	return (f_str);
 }
-/*
+
+void	flag_prio_p(t_print *datas)
+{
+	if (datas->space_f)
+		datas->space_f = 0;
+	if (datas->plus_f)
+		datas->plus_f = 0;
+	if (datas->zero_f)
+		datas->zero_f = 0;
+	if (datas->preci)
+		datas->preci = 0;
+}
+
 char	*conv_p(t_print *datas, va_list args)
 {
-	return (NULL);
+	char		*str;
+	char		*str_with_prefix;
+	char		*f_str;
+	int			len_f_str;
+	uintmax_t	value;
+
+	flag_prio_p(datas);
+	value = (uintmax_t)va_arg(args, void*);
+	if(!(str = ft_uimtoa_base(value, 16)))
+		return (NULL);
+	str_with_prefix = ft_strjoin_free("0x", str, 0, 1);
+	str_with_prefix = ft_strlower(str_with_prefix);
+	len_f_str = get_tot_len(datas, str_with_prefix);
+	if (!(f_str = ft_strnew(len_f_str)))
+		return (NULL);
+	fill(datas, f_str, str_with_prefix, len_f_str);
+	free(str_with_prefix);
+	return (f_str);
 }
-*/
+
 void	rewrite_str(t_print *datas, char *str)
 {
 	int	i;
@@ -385,10 +458,10 @@ void	init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args))
 	f_ptr[88] = &(conv_X);
 	f_ptr[99] = &(conv_c);
 	f_ptr[100] = &(conv_d);
-	// f_ptr[102] = &(conv_f);
+	f_ptr[48] = &(conv_f);
 	f_ptr[105] = &(conv_i);
 	f_ptr[111] = &(conv_o);
-	// f_ptr[112] = &(conv_p);
+	f_ptr[112] = &(conv_p);
 	f_ptr[115] = &(conv_s);
 	f_ptr[117] = &(conv_u);
 	f_ptr[120] = &(conv_x);
@@ -486,7 +559,8 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-	
+	printf("printf = %fhey\n", 12.345);
+	ft_printf("ft_printf = %fhey\n", 12.345);
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
 	// ft_printf("4567 |%10]5d| plip\n", 12);
