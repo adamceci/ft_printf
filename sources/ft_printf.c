@@ -6,7 +6,7 @@
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 17:19:09 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/20 19:09:39 by apalaz           ###   ########.fr       */
+/*   Updated: 2019/06/21 17:05:53 by apalaz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,6 +221,19 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 	}
 }
 
+void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
+{
+	int len_str;
+
+	len_str = ft_strlen(str);
+	put_spaces(&f_str, datas->space_f);
+	printf("1 = %s\n", f_str);
+	put_plus(&f_str, datas->plus_f);
+	printf("2 = %s\n", f_str);
+	put_value(&f_str, str, len_str);
+	printf("3 = %s\n", f_str);
+}
+
 void	flag_prio_x(t_print *datas)
 {
 	if (datas->plus_f)
@@ -296,33 +309,27 @@ char	*conv_d(t_print *datas, va_list args)
 	return (f_str);
 }
 
-char	*ft_ftoa(long double value, t_print *datas)
+char	*ft_ftoa(long double value, int preci)
 {
-	uintmax_t	n;
+	intmax_t	n;
 	char		*str;
 	char		*final_str;
 
-	n = (uintmax_t)value;
-	value = value - n;
+	printf("preci = %d\n", preci);
+	n = (intmax_t)value;
+	value -= n;
 	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
-	if (datas->preci == -1)
-		datas->preci = 6;
-	while(datas->preci > 0)
+	// preci 0 --> %.f
+	if (preci == -1)
+		preci = 6;
+	while(preci > 0)
 	{
-		value = value * 10;
-		datas->preci = datas->preci -1;
+		value *= 10;
+		preci--;
 	}
-	n = (uintmax_t)value;
-	final_str = ft_strjoin_free(str, ft_imttoa(value), 1, 1);
+	n = ft_round(value);
+	final_str = ft_strjoin_free(str, ft_imttoa(n), 1, 1);
 	return (final_str);
-}
-
-void	flag_prio_f(t_print *datas)
-{
-	if (datas->field)
-		datas->field = -1;
-	if (datas->minus_f)
-		datas->minus_f = 0;
 }
 
 char	*conv_f(t_print *datas, va_list args)
@@ -332,15 +339,16 @@ char	*conv_f(t_print *datas, va_list args)
 	int len_f_str;
 	long double		value;
 
-	flag_prio_f(datas);
 	value = (long double)va_arg(args, double);
-	if(!(str = ft_ftoa(value, datas)))
+	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
 	datas->preci = -1;
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
-	fill(datas, f_str, str, len_f_str);
+	printf("f_str 1 = %s\n", f_str);
+	fill_f(datas, f_str, str, len_f_str);
+	printf("f_str 2 = %s\n", f_str);
 	free(str);
 	return (f_str);
 }
@@ -517,6 +525,11 @@ void flag_priorities(t_print *datas)
 		if (datas->field <= datas->preci)
 			datas->field = -1;
 	}
+	if (datas->conversion == 'f')
+	{
+		datas->field = -1;
+		datas->minus_f = 0;
+	}
 }
 
 int ft_printf(const char *format, ...)
@@ -575,13 +588,18 @@ int main()
 	// printf("%d\n", 2000000);
 	// ft_printf("%d\n", 2000000);
 
-	int n;
-	int *nu;
+	 printf("printf = %.2f\n", 1234.5690);
+	 ft_printf("ft_printf = %.2f\n", 1234.5690);
 
-	n = 12;
-	nu = &n;
-	printf("p = %100p\n", nu);
-	ft_printf("p = %100p\n", nu);
+	//  printf("printf = %.0f\n", 0.5690);
+	//  ft_printf("ft_printf = %.0f\n", 0.5690);
+
+	//  printf("printf = % -f\n", 1234.5690);
+	//  ft_printf("ft_printf = % -f\n", 1234.5690);
+
+	//  printf("printf = %20.2f\n", 1234.5690);
+	//  ft_printf("ft_printf = %20.2f\n", 1234.5690);
+
 	// printf("x = %x\n", "salut");
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
