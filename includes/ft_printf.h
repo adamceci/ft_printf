@@ -41,9 +41,6 @@ typedef struct	s_print
 	int			neg;
 }				t_print;
 
-<<<<<<< HEAD
-void			init_struct(t_print *datas);
-=======
 void			init_vars(t_strings *solve_strs, t_print *datas);
 void			init_struct(t_print *datas);
 void			init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args));
@@ -51,4 +48,3 @@ intmax_t		modifiers_d_i(t_print *datas, va_list args);
 uintmax_t		modifiers_o_u_x(t_print *datas, va_list args);
 
 #endif
->>>>>>> modifiers

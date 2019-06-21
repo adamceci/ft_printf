@@ -304,7 +304,7 @@ char	*ft_ftoa(long double value, t_print *datas)
 
 	n = (uintmax_t)value;
 	value = value - n;
-	str = ft_strjoin(ft_lltoa(n), ".");
+	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
 	if (datas->preci == -1)
 		datas->preci = 6;
 	while(datas->preci > 0)
@@ -313,7 +313,7 @@ char	*ft_ftoa(long double value, t_print *datas)
 		datas->preci = datas->preci -1;
 	}
 	n = (uintmax_t)value;
-	final_str = ft_strjoin_free(str, ft_lltoa(value), 1, 0);
+	final_str = ft_strjoin_free(str, ft_imttoa(value), 1, 1);
 	return (final_str);
 }
 
@@ -377,18 +377,6 @@ char	*conv_o(t_print *datas, va_list args)
 	return (f_str);
 }
 
-void	flag_prio_p(t_print *datas)
-{
-	if (datas->space_f)
-		datas->space_f = 0;
-	if (datas->plus_f)
-		datas->plus_f = 0;
-	if (datas->zero_f)
-		datas->zero_f = 0;
-	if (datas->preci)
-		datas->preci = 0;
-}
-
 char	*conv_p(t_print *datas, va_list args)
 {
 	char		*str;
@@ -397,9 +385,8 @@ char	*conv_p(t_print *datas, va_list args)
 	int			len_f_str;
 	uintmax_t	value;
 
-	flag_prio_p(datas);
 	value = (uintmax_t)va_arg(args, void*);
-	if(!(str = ft_uimtoa_base(value, 16)))
+	if(!(str = ft_uimttoa_base(value, 16)))
 		return (NULL);
 	str_with_prefix = ft_strjoin_free("0x", str, 0, 1);
 	str_with_prefix = ft_strlower(str_with_prefix);
@@ -587,10 +574,14 @@ int main()
 	// ft_printf("%lld\n", -10000000000000000000);
 	// printf("%d\n", 2000000);
 	// ft_printf("%d\n", 2000000);
-	printf("%u\n", -1000000000000);
-	ft_printf("%u\n", -1000000000000);
 
-	// printf("p = %p\n", "salut");
+	int n;
+	int *nu;
+
+	n = 12;
+	nu = &n;
+	printf("p = %100p\n", nu);
+	ft_printf("p = %100p\n", nu);
 	// printf("x = %x\n", "salut");
 	// ft_printf("|%-+.20d|\n\n", 12);
 	// ft_printf("4567 |%-10]5d| plip\n", 12);
@@ -606,6 +597,9 @@ int main()
 
 	// TESTS OK :
 	//
+	// printf("%u\n", -1000000000000);
+	// ft_printf("%u\n", -1000000000000);
+	// printf('\n');
 	// printf("%01d\n", -100);
 	// ft_printf("%01d\n", -100);
 	// printf("\n");

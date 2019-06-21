@@ -67,14 +67,8 @@ SRCS_LIST = ft_memset.c			\
 			ft_strsplit.c		\
 			ft_itoa.c			\
 			ft_itoa_base.c		\
-<<<<<<< HEAD
-			ft_lltoa.c			\
-			ft_lltoa_base.c		\
-			ft_uimtoa_base.c	\
-=======
 			ft_imttoa.c			\
 			ft_uimttoa_base.c	\
->>>>>>> modifiers
 			ft_putchar.c		\
 			ft_putstr.c			\
 			ft_putendl.c		\
