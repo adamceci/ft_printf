@@ -516,8 +516,8 @@ int main()
 	// ft_printf("%lld\n", -10000000000000000000);
 	// printf("%d\n", 2000000);
 	// ft_printf("%d\n", 2000000);
-	printf("%llu\n", 100000000000000000000);
-	ft_printf("%llu\n", 100000000000000000000);
+	printf("%u\n", -1000000000000);
+	ft_printf("%u\n", -1000000000000);
 
 	// printf("p = %p\n", "salut");
 	// printf("x = %x\n", "salut");

@@ -16,6 +16,8 @@
 #include "libft.h"
 #include <stdarg.h>
 
+#include <stdio.h> // a enlever !
+
 typedef struct	s_strings
 {
 	char		*s1;
