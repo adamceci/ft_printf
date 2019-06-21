@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-void	change_base(long long n, int base, char *str, int i)
+void	change_base(uintmax_t n, int base, char *str, int i)
 {
 	int	rest;
 

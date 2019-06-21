@@ -12,20 +12,26 @@
 
 #include "libft.h"
 
-char	*ft_lltoa(long long n)
+char	*ft_imttoa(intmax_t n)
 {
 	char	*str;
 	int		nb_chars;
 	int		i;
+	int		sign;
 
 	nb_chars = ft_count_chars(n);
 	if (!(str = ft_strnew(nb_chars)))
 		return (NULL);
+	sign = (n < 0) ? (1) : (0);
 	i = nb_chars - 1;
+	if (n < 0)
+		n *= -1;
 	while (i >= 0)
 	{
 		str[i] = ft_fill_char(str, &n);
 		i--;
 	}
+	if (sign)
+		str[0] = '-';
 	return (str);
 }
