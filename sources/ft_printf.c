@@ -6,7 +6,7 @@
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 17:19:09 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/21 17:05:53 by apalaz           ###   ########.fr       */
+/*   Updated: 2019/06/24 18:57:42 by apalaz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void print_data(t_print datas)
 int	conversion_char(char c)
 {
 	if (c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'o' ||
-			c == 'u' || c == 'x' || c == 'X')
+			c == 'u' || c == 'x' || c == 'X' || c == 'f')
 		return (1);
 	return (0);
 }
@@ -132,6 +132,13 @@ int		get_tot_len(t_print *datas, char *str)
 		if (datas->plus_f)
 			tot_len++;
 	}
+	if (!datas->neg)
+	{
+		if (datas->plus_f)
+			tot_len++;
+		if (datas->space_f)
+			tot_len++;
+	}
 	return (tot_len);
 }
 
@@ -227,11 +234,8 @@ void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 
 	len_str = ft_strlen(str);
 	put_spaces(&f_str, datas->space_f);
-	printf("1 = %s\n", f_str);
 	put_plus(&f_str, datas->plus_f);
-	printf("2 = %s\n", f_str);
 	put_value(&f_str, str, len_str);
-	printf("3 = %s\n", f_str);
 }
 
 void	flag_prio_x(t_print *datas)
@@ -312,19 +316,28 @@ char	*conv_d(t_print *datas, va_list args)
 char	*ft_ftoa(long double value, int preci)
 {
 	intmax_t	n;
+	int			skerk;
 	char		*str;
 	char		*final_str;
 
-	printf("preci = %d\n", preci);
 	n = (intmax_t)value;
 	value -= n;
-	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
-	// preci 0 --> %.f
+	if (preci == 0)
+	{
+		final_str = ft_imttoa(n);
+		return (final_str);
+	}
 	if (preci == -1)
 		preci = 6;
-	while(preci > 0)
+	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
+	printf("value = %Lf\n", value);
+	while(preci > 1)
 	{
 		value *= 10;
+		skerk = (int)value;
+		value -= skerk;
+		printf("skerk = %d\n", skerk);
+		str = ft_strjoin_free(str, ft_itoa(skerk), 1, 1);
 		preci--;
 	}
 	n = ft_round(value);
@@ -339,16 +352,14 @@ char	*conv_f(t_print *datas, va_list args)
 	int len_f_str;
 	long double		value;
 
-	value = (long double)va_arg(args, double);
+	value = (long double)va_arg(args, double)/1.0;
 	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
 	datas->preci = -1;
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
-	printf("f_str 1 = %s\n", f_str);
 	fill_f(datas, f_str, str, len_f_str);
-	printf("f_str 2 = %s\n", f_str);
 	free(str);
 	return (f_str);
 }
@@ -479,7 +490,7 @@ void	init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args))
 	f_ptr[88] = &(conv_X);
 	f_ptr[99] = &(conv_c);
 	f_ptr[100] = &(conv_d);
-	f_ptr[48] = &(conv_f);
+	f_ptr[102] = &(conv_f);
 	f_ptr[105] = &(conv_i);
 	f_ptr[111] = &(conv_o);
 	f_ptr[112] = &(conv_p);
@@ -529,6 +540,8 @@ void flag_priorities(t_print *datas)
 	{
 		datas->field = -1;
 		datas->minus_f = 0;
+		if (datas->plus_f && datas->space_f)
+			datas->space_f = 0;
 	}
 }
 
@@ -588,8 +601,8 @@ int main()
 	// printf("%d\n", 2000000);
 	// ft_printf("%d\n", 2000000);
 
-	 printf("printf = %.2f\n", 1234.5690);
-	 ft_printf("ft_printf = %.2f\n", 1234.5690);
+	printf("printf = %fhey\n", 34.0002);
+	ft_printf("ft_printf = %fhey\n", 34.0002);
 
 	//  printf("printf = %.0f\n", 0.5690);
 	//  ft_printf("ft_printf = %.0f\n", 0.5690);
