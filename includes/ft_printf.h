@@ -41,6 +41,7 @@ typedef struct	s_print
 	int			neg;
 }				t_print;
 
+int				ft_printf(const char *format, ...);
 void			init_vars(t_strings *solve_strs, t_print *datas);
 void			init_struct(t_print *datas);
 void			init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args));
