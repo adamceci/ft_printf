@@ -1,3 +1,5 @@
+#include "ft_printf.h"
+
 int main()
 {
     // printf("%lld\n", -10000000000000000000);
@@ -96,13 +98,13 @@ int main()
 	// printf("printf = %0+150fhey\n", 34.02);
 	// ft_printf("printf = %0+150fhey\n", 34.02);
     // printf("\n");
-	//  printf("printf = %.0f\n", 0.5690);
-	//  ft_printf("ft_printf = %.0f\n", 0.5690);
+	// printf("printf = %.0f\n", 0.5690);
+	// ft_printf("ft_printf = %.0f\n", 0.5690);
     // printf("\n");
-	//  printf("printf = % -f\n", 1234.5690);
-	//  ft_printf("ft_printf = % -f\n", 1234.5690);
+	// printf("printf = % -f\n", 1234.5690);
+	// ft_printf("ft_printf = % -f\n", 1234.5690);
     // printf("\n");
-	//  printf("printf = %20.2f\n", 1234.5690);
-	//  ft_printf("ft_printf = %20.2f\n", 1234.5690);
+	// printf("printf = %20.2f\n", 1234.5690);
+	// ft_printf("ft_printf = %20.2f\n", 1234.5690);
 	return (0);
 }

@@ -15,9 +15,11 @@ HEADERS_LIST = ft_printf.h
 HEADERS = $(addprefix $(HEADERS_DIR), $(HEADERS_LIST))
 
 SRCS_DIR = ./sources/
-SRCS_LIST = ft_printf.c	\
-			init.c		\
-			modifiers.c
+SRCS_LIST = ft_printf.c			\
+			init.c				\
+			modifiers.c			\
+			utils.c				\
+			flags_priorities.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 
 OBJS_DIR = objects/

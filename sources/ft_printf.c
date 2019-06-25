@@ -29,14 +29,6 @@ void print_data(t_print datas)
 	printf("\n");
 }
 
-int	conversion_char(char c)
-{
-	if (c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'o' ||
-			c == 'u' || c == 'x' || c == 'X' || c == 'f')
-		return (1);
-	return (0);
-}
-
 char	*conv_infos(char **str)
 {
 	int		i;
@@ -48,13 +40,6 @@ char	*conv_infos(char **str)
 	s = ft_strsub(*str, 0, i + 1);
 	*str += (i + 1);
 	return (s);
-}
-
-int	is_mod(char c)
-{
-	if (c == 'l' || c == 'h')
-		return (1);
-	return (0);
 }
 
 void	get_mod(t_print *datas, char *str, int *i)
@@ -522,42 +507,6 @@ char	*translate(t_print *datas, va_list args)
 	return (str);
 }
 
-int	numeric_conversion(char c)
-{
-	if (c == 'd' || c == 'i' || c == 'o' || c == 'u' || c == 'x' || c == 'X')
-		return (1);
-	return (0);
-}
-
-void flag_priorities(t_print *datas)
-{
-	if (datas->conversion == 's' || datas->conversion == 'c' ||
-			datas->conversion == 'p')
-	{
-		datas->plus_f = 0;
-		datas->hash_f = 0;
-		datas->zero_f = 0;
-		datas->space_f = 0;
-		if (datas->conversion == 'c' || datas->conversion == 'p')
-			datas->preci = -1;
-	}
-	if (numeric_conversion(datas->conversion))
-	{
-		if (datas->zero_f)
-			if (datas->preci != -1 || datas->minus_f)
-				datas->zero_f = 0;
-		if (datas->plus_f && datas->space_f)
-			datas->space_f = 0;
-		if (datas->field <= datas->preci)
-			datas->field = -1;
-	}
-	if (datas->conversion == 'f')
-	{
-		if (datas->plus_f && datas->space_f)
-			datas->space_f = 0;
-	}
-}
-
 int ft_printf(const char *format, ...)
 {
 	t_print		datas;
@@ -595,7 +544,7 @@ int ft_printf(const char *format, ...)
 				}
 				parse(solve_strs.s2, &datas);
 				// print_data(datas);
-				flag_priorities(&datas);
+				flags_priorities(&datas);
 				solve_strs.s2 = translate(&datas, args);
 				if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, solve_strs.s2, 1, 1)))
 					return (-1);
