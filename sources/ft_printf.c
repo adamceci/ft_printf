@@ -6,7 +6,7 @@
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 17:19:09 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/20 19:09:39 by apalaz           ###   ########.fr       */
+/*   Updated: 2019/06/24 18:57:42 by apalaz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void print_data(t_print datas)
 int	conversion_char(char c)
 {
 	if (c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'o' ||
-			c == 'u' || c == 'x' || c == 'X')
+			c == 'u' || c == 'x' || c == 'X' || c == 'f')
 		return (1);
 	return (0);
 }
@@ -129,8 +129,13 @@ int		get_tot_len(t_print *datas, char *str)
 	if (tot_len < datas->preci)
 	{
 		tot_len = datas->preci;
-		if (datas->plus_f)
-			tot_len++;
+		if (!datas->neg)
+		{
+			if (datas->plus_f)
+				tot_len++;
+			if (datas->space_f)
+				tot_len++;
+		}
 	}
 	return (tot_len);
 }
@@ -221,6 +226,32 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 	}
 }
 
+void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
+{
+	int	nb_spaces;
+	int len_str;
+
+	len_str = ft_strlen(str);
+	nb_spaces = len_f_str - len_str - datas->plus_f - datas->neg;
+	if (datas->minus_f)
+	{
+		put_plus(&f_str, datas->plus_f);
+		put_minus(&f_str, datas->neg);
+		put_value(&f_str, str, len_str);
+		put_spaces(&f_str, nb_spaces);
+	}
+	else
+	{
+		put_plus(&f_str, datas->plus_f);
+		if (!datas->zero_f)
+			put_spaces(&f_str, nb_spaces);
+		put_minus(&f_str, datas->neg);
+		if (datas->zero_f)
+			put_zeros(&f_str, nb_spaces);
+		put_value(&f_str, str, len_str);
+	}
+}
+
 void	flag_prio_x(t_print *datas)
 {
 	if (datas->plus_f)
@@ -296,51 +327,54 @@ char	*conv_d(t_print *datas, va_list args)
 	return (f_str);
 }
 
-char	*ft_ftoa(long double value, t_print *datas)
+char	*ft_ftoa(long double value, int preci)
 {
-	uintmax_t	n;
+	intmax_t	n;
 	char		*str;
 	char		*final_str;
 
-	n = (uintmax_t)value;
-	value = value - n;
-	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
-	if (datas->preci == -1)
-		datas->preci = 6;
-	while(datas->preci > 0)
+	n = (intmax_t)value;
+	value -= n;
+	if (preci == 0)
 	{
-		value = value * 10;
-		datas->preci = datas->preci -1;
+		final_str = ft_imttoa(n);
+		return (final_str);
 	}
-	n = (uintmax_t)value;
-	final_str = ft_strjoin_free(str, ft_imttoa(value), 1, 1);
+	if (preci == -1)
+		preci = 6;
+	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
+	while(preci > 0)
+	{
+		value *= 10;
+		if (value < 1.0 && preci > 1)
+			str = ft_strjoin_free(str, "0", 1, 0);	
+		preci--;
+	}
+	n = ft_round(value);
+	final_str = ft_strjoin_free(str, ft_imttoa(n), 1, 1);
 	return (final_str);
-}
-
-void	flag_prio_f(t_print *datas)
-{
-	if (datas->field)
-		datas->field = -1;
-	if (datas->minus_f)
-		datas->minus_f = 0;
 }
 
 char	*conv_f(t_print *datas, va_list args)
 {
 	char			*str;
 	char			*f_str;
-	int len_f_str;
+	int 			len_f_str;
 	long double		value;
 
-	flag_prio_f(datas);
-	value = (long double)va_arg(args, double);
-	if(!(str = ft_ftoa(value, datas)))
+	if ((value = (long double)va_arg(args, double)) < 0)
+	{
+		value *= -1;
+		datas->neg = 1;
+	}
+	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
-	datas->preci = -1;
 	len_f_str = get_tot_len(datas, str);
+	if (datas->preci > datas->field)
+		len_f_str += (ft_strlen(ft_itoa((int)value)) + 1);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
-	fill(datas, f_str, str, len_f_str);
+	fill_f(datas, f_str, str, len_f_str);
 	free(str);
 	return (f_str);
 }
@@ -471,7 +505,7 @@ void	init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args))
 	f_ptr[88] = &(conv_X);
 	f_ptr[99] = &(conv_c);
 	f_ptr[100] = &(conv_d);
-	f_ptr[48] = &(conv_f);
+	f_ptr[102] = &(conv_f);
 	f_ptr[105] = &(conv_i);
 	f_ptr[111] = &(conv_o);
 	f_ptr[112] = &(conv_p);
@@ -516,6 +550,11 @@ void flag_priorities(t_print *datas)
 			datas->space_f = 0;
 		if (datas->field <= datas->preci)
 			datas->field = -1;
+	}
+	if (datas->conversion == 'f')
+	{
+		if (datas->plus_f && datas->space_f)
+			datas->space_f = 0;
 	}
 }
 

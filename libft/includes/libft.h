@@ -6,7 +6,7 @@
 /*   By: aceciora <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/15 12:39:51 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/19 18:30:39 by apalaz           ###   ########.fr       */
+/*   Updated: 2019/06/21 16:46:49 by apalaz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ int					ft_isspace(int c);
 void				ft_bubble_sort(int *tab, int size);
 int					ft_sqrt(int nb);
 void				ft_swap(int *a, int *b);
+uintmax_t			ft_round(long double value);
 int					get_next_line(const int fd, char **line);
 void				free_2d_array(char **array, unsigned int size);
 int					count_until(const char *str, char c);
