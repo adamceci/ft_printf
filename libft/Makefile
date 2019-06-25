@@ -6,7 +6,7 @@
 #    By: vbrazhni <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/05 13:39:23 by vbrazhni          #+#    #+#              #
-#    Updated: 2019/06/19 18:32:05 by apalaz           ###   ########.fr        #
+#    Updated: 2019/06/21 16:45:29 by apalaz           ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -90,6 +90,7 @@ SRCS_LIST = ft_memset.c			\
 			ft_bubble_sort.c	\
 			ft_sqrt.c			\
 			ft_swap.c			\
+			ft_round.c			\
 			get_next_line.c		\
 			free_2d_array.c		\
 			count_until.c		\
