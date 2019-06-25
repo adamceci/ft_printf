@@ -129,15 +129,13 @@ int		get_tot_len(t_print *datas, char *str)
 	if (tot_len < datas->preci)
 	{
 		tot_len = datas->preci;
-		if (datas->plus_f)
-			tot_len++;
-	}
-	if (!datas->neg)
-	{
-		if (datas->plus_f)
-			tot_len++;
-		if (datas->space_f)
-			tot_len++;
+		if (!datas->neg)
+		{
+			if (datas->plus_f)
+				tot_len++;
+			if (datas->space_f)
+				tot_len++;
+		}
 	}
 	return (tot_len);
 }
@@ -230,12 +228,28 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 
 void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 {
+	int	nb_spaces;
 	int len_str;
 
 	len_str = ft_strlen(str);
-	put_spaces(&f_str, datas->space_f);
-	put_plus(&f_str, datas->plus_f);
-	put_value(&f_str, str, len_str);
+	nb_spaces = len_f_str - len_str - datas->plus_f - datas->neg;
+	if (datas->minus_f)
+	{
+		put_plus(&f_str, datas->plus_f);
+		put_minus(&f_str, datas->neg);
+		put_value(&f_str, str, len_str);
+		put_spaces(&f_str, nb_spaces);
+	}
+	else
+	{
+		put_plus(&f_str, datas->plus_f);
+		if (!datas->zero_f)
+			put_spaces(&f_str, nb_spaces);
+		put_minus(&f_str, datas->neg);
+		if (datas->zero_f)
+			put_zeros(&f_str, nb_spaces);
+		put_value(&f_str, str, len_str);
+	}
 }
 
 void	flag_prio_x(t_print *datas)
@@ -316,7 +330,6 @@ char	*conv_d(t_print *datas, va_list args)
 char	*ft_ftoa(long double value, int preci)
 {
 	intmax_t	n;
-	int			skerk;
 	char		*str;
 	char		*final_str;
 
@@ -330,14 +343,11 @@ char	*ft_ftoa(long double value, int preci)
 	if (preci == -1)
 		preci = 6;
 	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
-	printf("value = %Lf\n", value);
-	while(preci > 1)
+	while(preci > 0)
 	{
 		value *= 10;
-		skerk = (int)value;
-		value -= skerk;
-		printf("skerk = %d\n", skerk);
-		str = ft_strjoin_free(str, ft_itoa(skerk), 1, 1);
+		if (value < 1.0 && preci > 1)
+			str = ft_strjoin_free(str, "0", 1, 0);	
 		preci--;
 	}
 	n = ft_round(value);
@@ -349,14 +359,19 @@ char	*conv_f(t_print *datas, va_list args)
 {
 	char			*str;
 	char			*f_str;
-	int len_f_str;
+	int 			len_f_str;
 	long double		value;
 
-	value = (long double)va_arg(args, double)/1.0;
+	if ((value = (long double)va_arg(args, double)) < 0)
+	{
+		value *= -1;
+		datas->neg = 1;
+	}
 	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
-	datas->preci = -1;
 	len_f_str = get_tot_len(datas, str);
+	if (datas->preci > datas->field)
+		len_f_str += (ft_strlen(ft_itoa((int)value)) + 1);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
 	fill_f(datas, f_str, str, len_f_str);
@@ -538,8 +553,6 @@ void flag_priorities(t_print *datas)
 	}
 	if (datas->conversion == 'f')
 	{
-		datas->field = -1;
-		datas->minus_f = 0;
 		if (datas->plus_f && datas->space_f)
 			datas->space_f = 0;
 	}
@@ -601,8 +614,41 @@ int main()
 	// printf("%d\n", 2000000);
 	// ft_printf("%d\n", 2000000);
 
-	printf("printf = %fhey\n", 34.0002);
-	ft_printf("ft_printf = %fhey\n", 34.0002);
+	// printf("printf = %.3fhey\n", 34.00020049);
+	// ft_printf("printf = %.3fhey\n", 34.00020049);
+
+	// printf("printf = %.6fhey\n", 34.00020049);
+	// ft_printf("printf = %.6fhey\n", 34.00020049);
+
+	// printf("printf = %   .7fhey\n", 34.00020049);
+	// ft_printf("printf = %   .7fhey\n", 34.00020049);
+
+	// printf("printf = %.20fhey\n", 34.00020049);
+	// ft_printf("printf = %.20fhey\n", 34.00020049);
+
+	// printf("printf = %+.fhey\n", 34.00020049);
+	// ft_printf("printf = %+.fhey\n", 34.00020049);
+
+	// printf("printf = %.0fhey\n", 34.00020049);
+	// ft_printf("printf = %.0fhey\n", 34.00020049);
+
+	// printf("printf = %.3fhey\n", 34.00020049);
+	// ft_printf("printf = %.3fhey\n", 34.00020049);
+
+
+
+
+	// printf("printf = %-50fhey\n", 34.02);
+	// ft_printf("printf = %-50fhey\n", 34.02);
+
+	// printf("printf = %0150fhey\n", 34.02);
+	// ft_printf("printf = %0150fhey\n", 34.02);
+
+	printf("printf = %0+150fhey\n", 34.02);
+	ft_printf("printf = %0+150fhey\n", 34.02);
+
+
+
 
 	//  printf("printf = %.0f\n", 0.5690);
 	//  ft_printf("ft_printf = %.0f\n", 0.5690);
