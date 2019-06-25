@@ -19,7 +19,8 @@ SRCS_LIST = ft_printf.c			\
 			init.c				\
 			modifiers.c			\
 			utils.c				\
-			flags_priorities.c
+			flags_priorities.c	\
+			fill_struct.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 
 OBJS_DIR = objects/

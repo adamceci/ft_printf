@@ -6,7 +6,7 @@
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 17:19:09 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/24 18:57:42 by apalaz           ###   ########.fr       */
+/*   Updated: 2019/06/25 18:48:02 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@
 // Gerer le cas "%03d", -5 --> print 0-5 plutot que -05
 // ADD HEADER DANS LES FICHIERS
 
-void print_data(t_print datas)
-{
-	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
-		   datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
-		   datas.field, datas.preci, datas.conversion);
-	printf("modifier = %s\n", datas.modifier);
-	printf("\n");
-}
+// void print_data(t_print datas)
+// {
+// 	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
+// 		   datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
+// 		   datas.field, datas.preci, datas.conversion);
+// 	printf("modifier = %s\n", datas.modifier);
+// 	printf("\n");
+// }
 
 char	*conv_infos(char **str)
 {
@@ -40,68 +40,6 @@ char	*conv_infos(char **str)
 	s = ft_strsub(*str, 0, i + 1);
 	*str += (i + 1);
 	return (s);
-}
-
-void	get_mod(t_print *datas, char *str, int *i)
-{
-	if (str[*i + 1] == str[*i])
-	{
-		datas->modifier = ft_strnew(2);
-		datas->modifier[0] = str[*i];
-		datas->modifier[1] = str[*i + 1];
-		(*i)++;
-	}
-	else
-	{
-		datas->modifier = ft_strnew(1);
-		datas->modifier[0] = str[*i];
-	}
-}
-
-void fill_data(char *str, int *i, t_print *datas)
-{
-	if (str[*i] == '-')
-		datas->minus_f = 1;
-	else if (str[*i] == '+')
-		datas->plus_f = 1;
-	else if (str[*i] == '#')
-		datas->hash_f = 1;
-	else if (str[*i] == '0')
-		datas->zero_f = 1;
-	else if (str[*i] == ' ')
-		datas->space_f = 1;
-	else if (ft_isdigit(str[*i]))
-	{
-		datas->field = get_numberi((const char *)&str[*i], i);
-		(*i)--;
-	}
-	else if (str[*i] == '.')
-	{
-		(*i)++;
-		datas->preci = get_numberi((const char*)&str[*i], i);
-		(*i)--;
-		(datas->preci < 0) ? (datas->preci = -1) : (datas->preci);
-	}
-	else if (is_mod(str[*i]))
-		get_mod(datas, &str[*i], i);
-	else if (conversion_char(str[*i]))
-		datas->conversion = str[*i];
-	// else
-	// 	gerer le cas de %10]5d par exemple ! --> remove everything between
-	//	'%' and the first invalid char.
-}
-
-void	parse(char *str, t_print *datas)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		fill_data(str, &i, datas);
-		i++;
-	}
-	free(str);
 }
 
 int		get_tot_len(t_print *datas, char *str)
@@ -484,21 +422,6 @@ char	*conv_x(t_print *datas, va_list args)
 	return (s);
 }
 
-void	init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args))
-{
-	ft_bzero(f_ptr, 256);
-	f_ptr[88] = &(conv_X);
-	f_ptr[99] = &(conv_c);
-	f_ptr[100] = &(conv_d);
-	f_ptr[102] = &(conv_f);
-	f_ptr[105] = &(conv_i);
-	f_ptr[111] = &(conv_o);
-	f_ptr[112] = &(conv_p);
-	f_ptr[115] = &(conv_s);
-	f_ptr[117] = &(conv_u);
-	f_ptr[120] = &(conv_x);
-}
-
 char	*translate(t_print *datas, va_list args)
 {
 	char	*str;
@@ -543,7 +466,6 @@ int ft_printf(const char *format, ...)
 					return (-1);
 				}
 				parse(solve_strs.s2, &datas);
-				// print_data(datas);
 				flags_priorities(&datas);
 				solve_strs.s2 = translate(&datas, args);
 				if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, solve_strs.s2, 1, 1)))

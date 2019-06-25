@@ -42,6 +42,17 @@ typedef struct	s_print
 }				t_print;
 
 int				ft_printf(const char *format, ...);
+char			*conv_X(t_print *datas, va_list args);
+char			*conv_x(t_print *datas, va_list args);
+char			*conv_d(t_print *datas, va_list args);
+char			*conv_i(t_print *datas, va_list args);
+char			*conv_o(t_print *datas, va_list args);
+char			*conv_u(t_print *datas, va_list args);
+char			*conv_f(t_print *datas, va_list args);
+char 			*conv_s(t_print *datas, va_list args);
+char 			*conv_c(t_print *datas, va_list args);
+char 			*conv_p(t_print *datas, va_list args);
+void 			init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args));
 void			init_vars(t_strings *solve_strs, t_print *datas);
 void			init_struct(t_print *datas);
 void			init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args));
@@ -52,6 +63,9 @@ void			flags_priorities(t_print *datas);
 void 			flag_prio_c(t_print *datas);
 void 			flag_prio_x(t_print *datas);
 void			flag_prio_o(t_print *datas);
+void			get_mod(t_print *datas, char *str, int *i);
+void			fill_data(char *str, int *i, t_print *datas);
+void			parse(char *str, t_print *datas);
 intmax_t		modifiers_d_i(t_print *datas, va_list args);
 uintmax_t		modifiers_o_u_x(t_print *datas, va_list args);
 
