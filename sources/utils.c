@@ -14,7 +14,7 @@
 
 int	is_mod(char c)
 {
-	if (c == 'l' || c == 'h')
+	if (c == 'l' || c == 'h' || c == 'L' || c == 'j' || c == 'z')
 		return (1);
 	return (0);
 }
