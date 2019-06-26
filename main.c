@@ -81,55 +81,59 @@ int main()
     // ft_printf("|%-010.5d|\n", -12);
     // printf("\n");
 
-    printf("%.3fhey\n", 34.00020049);
-    ft_printf("%.3fhey\n", 34.00020049);
+    // printf("%.3fhey\n", 34.00020049);
+    // ft_printf("%.3fhey\n", 34.00020049);
+    // printf("\n");
+
+	// printf("%.6fhey\n", 34.00020049);
+	// ft_printf("%.6fhey\n", 34.00020049);
+    // printf("\n");
+
+	// printf("%   .7fhey\n", 34.00020049);
+	// ft_printf("%   .7fhey\n", 34.00020049);
+    // printf("\n");
+
+	// printf("%.20fhey\n", 34.00020049);
+	// ft_printf("%.20fhey\n", 34.00020049);
+    // printf("\n");
+
+	// printf("%+.fhey\n", 34.00020049);
+	// ft_printf("%+.fhey\n", 34.00020049);
+    // printf("\n");
+
+	// printf("%.0fhey\n", 34.00020049);
+	// ft_printf("%.0fhey\n", 34.00020049);
+    // printf("\n");
+
+	// printf("%.3fhey\n", 34.00020049);
+	// ft_printf("%.3fhey\n", 34.00020049);
+    // printf("\n");
+
+	// printf("%-50fhey\n", 34.02);
+	// ft_printf("%-50fhey\n", 34.02);
+    // printf("\n");
+
+	// printf("%0150fhey\n", 34.02);
+	// ft_printf("%0150fhey\n", 34.02);
+    // printf("\n");
+
+	// printf("%0+15fhey\n", 34.02);
+	// ft_printf("%0+15fhey\n", 34.02);
+    // printf("\n");
+
+	// printf("%.0f\n", 0.5690);
+	// ft_printf("%.0f\n", 0.5690);
+    // printf("\n");
+
+	printf("% -fhey\n", 1234.5690);
+	ft_printf("% -fhey\n", 1234.5690);
     printf("\n");
 
-	printf("%.6fhey\n", 34.00020049);
-	ft_printf("%.6fhey\n", 34.00020049);
+    printf("% -dhey\n", 1234);
+    ft_printf("% -dhey\n", 1234);
     printf("\n");
 
-	printf("%   .7fhey\n", 34.00020049);
-	ft_printf("%   .7fhey\n", 34.00020049);
-    printf("\n");
-
-	printf("%.20fhey\n", 34.00020049);
-	ft_printf("%.20fhey\n", 34.00020049);
-    printf("\n");
-
-	printf("%+.fhey\n", 34.00020049);
-	ft_printf("%+.fhey\n", 34.00020049);
-    printf("\n");
-
-	printf("%.0fhey\n", 34.00020049);
-	ft_printf("%.0fhey\n", 34.00020049);
-    printf("\n");
-
-	printf("%.3fhey\n", 34.00020049);
-	ft_printf("%.3fhey\n", 34.00020049);
-    printf("\n");
-
-	printf("%-50fhey\n", 34.02);
-	ft_printf("%-50fhey\n", 34.02);
-    printf("\n");
-
-	printf("%0150fhey\n", 34.02);
-	ft_printf("%0150fhey\n", 34.02);
-    printf("\n");
-
-	printf("%0+150fhey\n", 34.02);
-	ft_printf("%0+150fhey\n", 34.02);
-    printf("\n");
-
-	printf("%.0f\n", 0.5690);
-	ft_printf("%.0f\n", 0.5690);
-    printf("\n");
-
-	printf("% -f\n", 1234.5690);
-	ft_printf("% -f\n", 1234.5690);
-    printf("\n");
-
-	printf("%20.2f\n", 1234.5690);
-	ft_printf("%20.2f\n", 1234.5690);
+    // printf("%20.2f\n", 1234.5690);
+	// ft_printf("%20.2f\n", 1234.5690);
 	return (0);
 }

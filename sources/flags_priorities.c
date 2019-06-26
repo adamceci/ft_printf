@@ -48,9 +48,8 @@ void	flags_priorities(t_print *datas)
 	}
 	if (numeric_conversion(datas->conversion))
 	{
-		if (datas->zero_f)
-			if (datas->preci != -1 || datas->minus_f)
-				datas->zero_f = 0;
+		if (datas->zero_f && (datas->preci != -1 || datas->minus_f))
+			datas->zero_f = 0;
 		if (datas->plus_f && datas->space_f)
 			datas->space_f = 0;
 		if (datas->field <= datas->preci)
@@ -60,5 +59,7 @@ void	flags_priorities(t_print *datas)
 	{
 		if (datas->plus_f && datas->space_f)
 			datas->space_f = 0;
+		if (datas->preci == -1)
+			datas->preci = 6;
 	}
 }

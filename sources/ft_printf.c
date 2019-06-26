@@ -114,7 +114,7 @@ int		get_tot_len(t_print *datas, char *str)
 	if (tot_len < datas->preci)
 	{
 		tot_len = datas->preci;
-		if (datas->conversion != 'f' && !datas->neg)
+		if (!datas->neg)
 		{
 			if (datas->plus_f)
 				tot_len++;
@@ -122,7 +122,7 @@ int		get_tot_len(t_print *datas, char *str)
 				tot_len++;
 		}
 	}
-	if (datas->conversion == 'f' && !datas->neg)
+	if (datas->conversion == 'f' && !datas->neg && datas->field < datas->preci)
 	{
 		if (datas->plus_f)
 			tot_len++;
@@ -225,8 +225,10 @@ void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 
 	len_str = ft_strlen(str);
 	nb_spaces = len_f_str - len_str - datas->plus_f - datas->neg;
+	// printf("nb_spaces = %d\n", nb_spaces);
 	if (datas->minus_f)
 	{
+		// printf("ici\n");
 		put_plus(&f_str, datas->plus_f);
 		put_minus(&f_str, datas->neg);
 		put_value(&f_str, str, len_str);
@@ -346,9 +348,9 @@ char	*conv_f(t_print *datas, va_list args)
 	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
 	len_f_str = get_tot_len(datas, str);
-	if (datas->field != -1 && datas->preci > datas->field)	//added datas->field != -1
+	if (datas->field != -1 && datas->preci > datas->field)
 		len_f_str += (ft_strlen(ft_itoa((int)value)) + 1);
-	printf("len_f_str = %d\n", len_f_str);
+	// printf("len_f_str = %d\n", len_f_str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
 	fill_f(datas, f_str, str, len_f_str);
