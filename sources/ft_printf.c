@@ -318,13 +318,13 @@ char	*ft_ftoa(long double value, int preci)
 	char		*str;
 	char		*final_str;
 
-	n = (intmax_t)value;
-	value -= n;
 	if (preci == 0)
 	{
-		final_str = ft_imttoa(n);
+		final_str = ft_imttoa(ft_round(value));
 		return (final_str);
 	}
+	n = (intmax_t)value;
+	value -= n;
 	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
 	while(preci > 0)
 	{

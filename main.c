@@ -121,17 +121,17 @@ int main()
 	// ft_printf("%0+15fhey\n", 34.02);
     // printf("\n");
 
-	// printf("%.0f\n", 0.5690);
-	// ft_printf("%.0f\n", 0.5690);
+	printf("%.0f\n", -13.49999);
+	ft_printf("%.0f\n", -13.49999);
+    printf("\n");
+
+	// printf("% -fhey\n", 1234.5690);
+	// ft_printf("% -fhey\n", 1234.5690);
     // printf("\n");
 
-	printf("% -fhey\n", 1234.5690);
-	ft_printf("% -fhey\n", 1234.5690);
-    printf("\n");
-
-    printf("% -dhey\n", 1234);
-    ft_printf("% -dhey\n", 1234);
-    printf("\n");
+    // printf("% -dhey\n", 1234);
+    // ft_printf("% -dhey\n", 1234);
+    // printf("\n");
 
     // printf("%20.2f\n", 1234.5690);
 	// ft_printf("%20.2f\n", 1234.5690);
