@@ -6,11 +6,33 @@
 /*   By: aceciora <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 18:47:54 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/25 18:49:02 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/26 13:48:42 by aceciora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+void	flag_prio_c(t_print *datas)
+{
+	if (datas->preci != -1)
+		datas->preci = -1;
+}
+
+void	flag_prio_x(t_print *datas)
+{
+	if (datas->plus_f)
+		datas->plus_f = 0;
+	if (datas->space_f)
+		datas->space_f = 0;
+}
+
+void	flag_prio_o(t_print *datas)
+{
+	if (datas->space_f)
+		datas->space_f = 0;
+	if (datas->plus_f)
+		datas->plus_f = 0;
+}
 
 void	flags_priorities(t_print *datas)
 {
