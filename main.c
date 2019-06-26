@@ -2,18 +2,12 @@
 
 int main()
 {
-    // printf("%lld\n", -10000000000000000000);
-    // ft_printf("%lld\n", -10000000000000000000);
+    printf("%d\n", -1000000000000000000);
+    ft_printf("%d\n", -1000000000000000000);
+    printf("\n");
     // printf("%d\n", 2000000);
     // ft_printf("%d\n", 2000000);
 
-    // int n;
-    // int *nu;
-
-    // n = 12;
-    // nu = &n;
-    // printf("p = %100p\n", nu);
-    // ft_printf("p = %100p\n", nu);
     // printf("x = %x\n", "salut");
     // ft_printf("|%-+.20d|\n\n", 12);
     // ft_printf("4567 |%-10]5d| plip\n", 12);
@@ -121,9 +115,9 @@ int main()
 	// ft_printf("%0+15fhey\n", 34.02);
     // printf("\n");
 
-	printf("%.0f\n", -13.49999);
-	ft_printf("%.0f\n", -13.49999);
-    printf("\n");
+	// printf("%.0f\n", -13.49999);
+	// ft_printf("%.0f\n", -13.49999);
+    // printf("\n");
 
 	// printf("% -fhey\n", 1234.5690);
 	// ft_printf("% -fhey\n", 1234.5690);
