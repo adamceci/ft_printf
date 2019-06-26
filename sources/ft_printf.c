@@ -6,7 +6,7 @@
 /*   By: aceciora <aceciora@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 17:19:09 by aceciora          #+#    #+#             */
-/*   Updated: 2019/06/25 18:48:02 by aceciora         ###   ########.fr       */
+/*   Updated: 2019/06/24 18:57:42 by apalaz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@
 // Gerer le cas "%03d", -5 --> print 0-5 plutot que -05
 // ADD HEADER DANS LES FICHIERS
 
-// void print_data(t_print datas)
-// {
-// 	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
-// 		   datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
-// 		   datas.field, datas.preci, datas.conversion);
-// 	printf("modifier = %s\n", datas.modifier);
-// 	printf("\n");
-// }
+void print_data(t_print datas)
+{
+	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
+		   datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
+		   datas.field, datas.preci, datas.conversion);
+	printf("modifier = %s\n", datas.modifier);
+	printf("\n");
+}
 
 char	*conv_infos(char **str)
 {
@@ -42,6 +42,68 @@ char	*conv_infos(char **str)
 	return (s);
 }
 
+void	get_mod(t_print *datas, char *str, int *i)
+{
+	if (str[*i + 1] == str[*i])
+	{
+		datas->modifier = ft_strnew(2);
+		datas->modifier[0] = str[*i];
+		datas->modifier[1] = str[*i + 1];
+		(*i)++;
+	}
+	else
+	{
+		datas->modifier = ft_strnew(1);
+		datas->modifier[0] = str[*i];
+	}
+}
+
+void fill_data(char *str, int *i, t_print *datas)
+{
+	if (str[*i] == '-')
+		datas->minus_f = 1;
+	else if (str[*i] == '+')
+		datas->plus_f = 1;
+	else if (str[*i] == '#')
+		datas->hash_f = 1;
+	else if (str[*i] == '0')
+		datas->zero_f = 1;
+	else if (str[*i] == ' ')
+		datas->space_f = 1;
+	else if (ft_isdigit(str[*i]))
+	{
+		datas->field = get_numberi((const char *)&str[*i], i);
+		(*i)--;
+	}
+	else if (str[*i] == '.')
+	{
+		(*i)++;
+		datas->preci = get_numberi((const char*)&str[*i], i);
+		(*i)--;
+		(datas->preci < 0) ? (datas->preci = -1) : (datas->preci);
+	}
+	else if (is_mod(str[*i]))
+		get_mod(datas, &str[*i], i);
+	else if (conversion_char(str[*i]))
+		datas->conversion = str[*i];
+	// else
+	// 	gerer le cas de %10]5d par exemple ! --> remove everything between
+	//	'%' and the first invalid char.
+}
+
+void	parse(char *str, t_print *datas)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		fill_data(str, &i, datas);
+		i++;
+	}
+	free(str);
+}
+
 int		get_tot_len(t_print *datas, char *str)
 {
 	int	tot_len;
@@ -52,13 +114,20 @@ int		get_tot_len(t_print *datas, char *str)
 	if (tot_len < datas->preci)
 	{
 		tot_len = datas->preci;
-		if (!datas->neg)
+		if (datas->conversion != 'f' && !datas->neg)
 		{
 			if (datas->plus_f)
 				tot_len++;
 			if (datas->space_f)
 				tot_len++;
 		}
+	}
+	if (datas->conversion == 'f' && !datas->neg)
+	{
+		if (datas->plus_f)
+			tot_len++;
+		if (datas->space_f)
+			tot_len++;
 	}
 	return (tot_len);
 }
@@ -175,14 +244,6 @@ void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 	}
 }
 
-void	flag_prio_x(t_print *datas)
-{
-	if (datas->plus_f)
-		datas->plus_f = 0;
-	if (datas->space_f)
-		datas->space_f = 0;
-}
-
 char	*conv_X(t_print *datas, va_list args)
 {
 	char		*str;
@@ -200,12 +261,6 @@ char	*conv_X(t_print *datas, va_list args)
 	fill(datas, f_str, str, len_f_str);
 	free(str);
 	return (f_str);
-}
-
-void	flag_prio_c(t_print *datas)
-{
-	if (datas->preci != -1)
-		datas->preci = -1;
 }
 
 char	*conv_c(t_print *datas, va_list args)
@@ -263,8 +318,6 @@ char	*ft_ftoa(long double value, int preci)
 		final_str = ft_imttoa(n);
 		return (final_str);
 	}
-	if (preci == -1)
-		preci = 6;
 	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
 	while(preci > 0)
 	{
@@ -293,8 +346,9 @@ char	*conv_f(t_print *datas, va_list args)
 	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
 	len_f_str = get_tot_len(datas, str);
-	if (datas->preci > datas->field)
+	if (datas->field != -1 && datas->preci > datas->field)	//added datas->field != -1
 		len_f_str += (ft_strlen(ft_itoa((int)value)) + 1);
+	printf("len_f_str = %d\n", len_f_str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
 	fill_f(datas, f_str, str, len_f_str);
@@ -305,14 +359,6 @@ char	*conv_f(t_print *datas, va_list args)
 char	*conv_i(t_print *datas, va_list args)
 {
 	return (conv_d(datas, args));
-}
-
-void	flag_prio_o(t_print *datas)
-{
-	if (datas->space_f)
-		datas->space_f = 0;
-	if (datas->plus_f)
-		datas->plus_f = 0;
 }
 
 char	*conv_o(t_print *datas, va_list args)
@@ -466,6 +512,7 @@ int ft_printf(const char *format, ...)
 					return (-1);
 				}
 				parse(solve_strs.s2, &datas);
+				// print_data(datas);
 				flags_priorities(&datas);
 				solve_strs.s2 = translate(&datas, args);
 				if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, solve_strs.s2, 1, 1)))
