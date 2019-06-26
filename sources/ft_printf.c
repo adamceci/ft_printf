@@ -114,14 +114,11 @@ int		get_tot_len(t_print *datas, char *str)
 	if (tot_len < datas->preci)
 	{
 		tot_len = datas->preci;
-		if (!datas->neg)
-		{
-			if (datas->plus_f)
+		if (!datas->neg && datas->plus_f)
 				tot_len++;
-			if (datas->space_f)
-				tot_len++;
-		}
 	}
+	if (datas->conversion != 'f' && datas->space_f)
+		tot_len++;
 	if (datas->conversion == 'f' && !datas->neg && datas->field < datas->preci)
 	{
 		if (datas->plus_f)
@@ -205,6 +202,11 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 		put_plus(&f_str, datas->plus_f);
 		put_minus(&f_str, datas->neg);
 		put_zeros(&f_str, nb_zeros);
+		if (datas->space_f)
+		{
+			put_spaces(&f_str, nb_spaces);
+			nb_spaces--;
+		}
 		put_value(&f_str, str, len_str);
 		put_spaces(&f_str, nb_spaces);
 	}
@@ -225,12 +227,15 @@ void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 
 	len_str = ft_strlen(str);
 	nb_spaces = len_f_str - len_str - datas->plus_f - datas->neg;
-	// printf("nb_spaces = %d\n", nb_spaces);
 	if (datas->minus_f)
 	{
-		// printf("ici\n");
 		put_plus(&f_str, datas->plus_f);
 		put_minus(&f_str, datas->neg);
+		if (datas->space_f)
+		{
+			put_spaces(&f_str, nb_spaces);
+			nb_spaces--;
+		}
 		put_value(&f_str, str, len_str);
 		put_spaces(&f_str, nb_spaces);
 	}
