@@ -347,7 +347,7 @@ char	*conv_f(t_print *datas, va_list args)
 	int 			len_f_str;
 	long double		value;
 
-	if ((value = (long double)va_arg(args, double)) < 0)
+	if ((value = modifiers_f(datas, args)) < 0)
 	{
 		value *= -1;
 		datas->neg = 1;

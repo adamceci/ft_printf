@@ -69,5 +69,6 @@ void			fill_data(char *str, int *i, t_print *datas);
 void			parse(char *str, t_print *datas);
 intmax_t		modifiers_d_i(t_print *datas, va_list args);
 uintmax_t		modifiers_o_u_x(t_print *datas, va_list args);
+long double		modifiers_f(t_print *datas, va_list args);
 
 #endif
