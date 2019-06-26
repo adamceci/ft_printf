@@ -36,11 +36,12 @@ void	flag_prio_o(t_print *datas)
 
 void	flags_priorities(t_print *datas)
 {
+	if (!conv_hash_f(datas->conversion))
+		datas->hash_f = 0;
 	if (datas->conversion == 's' || datas->conversion == 'c' ||
 			datas->conversion == 'p')
 	{
 		datas->plus_f = 0;
-		datas->hash_f = 0;
 		datas->zero_f = 0;
 		datas->space_f = 0;
 		if (datas->conversion == 'c' || datas->conversion == 'p')
