@@ -267,6 +267,8 @@ char	*conv_X(t_print *datas, va_list args)
 		return (NULL);
 	fill(datas, f_str, str, len_f_str);
 	free(str);
+	if (datas->hash_f)
+		f_str = ft_strjoin_free("0X", f_str, 0, 1);
 	return (f_str);
 }
 
@@ -355,11 +357,12 @@ char	*conv_f(t_print *datas, va_list args)
 	len_f_str = get_tot_len(datas, str);
 	if (datas->field != -1 && datas->preci > datas->field)
 		len_f_str += (ft_strlen(ft_itoa((int)value)) + 1);
-	// printf("len_f_str = %d\n", len_f_str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
 	fill_f(datas, f_str, str, len_f_str);
 	free(str);
+	if (datas->preci == 0 && datas->hash_f)
+		f_str = ft_strjoin_free(f_str, ".", 1, 0);
 	return (f_str);
 }
 
@@ -384,6 +387,8 @@ char	*conv_o(t_print *datas, va_list args)
 		return (NULL);
 	fill(datas, f_str, str, len_f_str);
 	free(str);
+	if (datas->hash_f)
+		f_str = ft_strjoin_free("0", f_str, 0, 1);
 	return (f_str);
 }
 

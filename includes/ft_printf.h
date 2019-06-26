@@ -59,6 +59,7 @@ void			init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args));
 int				conversion_char(char c);
 int				numeric_conversion(char c);
 int				is_mod(char c);
+int				conv_hash_f(char c);
 void			flags_priorities(t_print *datas);
 void 			flag_prio_c(t_print *datas);
 void 			flag_prio_x(t_print *datas);

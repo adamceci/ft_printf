@@ -33,3 +33,10 @@ int	conversion_char(char c)
 		return (1);
 	return (0);
 }
+
+int conv_hash_f(char c)
+{
+	if (c == 'f' || c == 'o' || c == 'x' || c == 'X')
+		return (1);
+	return (0);
+}
