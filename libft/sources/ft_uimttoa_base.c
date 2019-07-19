@@ -20,6 +20,8 @@ char	*ft_uimttoa_base(uintmax_t n, int base)
 
 	num = n;
 	i = 0;
+	if (num == 0)
+		i = 1;
 	while (num > 0)
 	{
 		i++;

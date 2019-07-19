@@ -16,6 +16,8 @@ void	change_base(uintmax_t n, int base, char *str, int i)
 {
 	int	rest;
 
+	if (n == 0)
+		str[0] = '0';
 	while (n > 0)
 	{
 		rest = n % base;

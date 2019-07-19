@@ -2,9 +2,13 @@
 
 int main()
 {
-    printf("%d\n", -1000000000000000000);
-    ft_printf("%d\n", -1000000000000000000);
+    printf("%5.0Xhey", 0);
     printf("\n");
+    ft_printf("%5.0Xhey\n", 0);
+
+    // printf("%d\n", -1000000000000000000);
+    // ft_printf("%d\n", -1000000000000000000);
+    // printf("\n");
     // printf("%d\n", 2000000);
     // ft_printf("%d\n", 2000000);
 
@@ -31,13 +35,13 @@ int main()
     // ft_printf("%#01d\n", -100);
     // printf("\n");
 
-    printf("%#o\n", -1234567);
-    ft_printf("%#o\n", -1234567);
-    printf("\n");
+    // printf("%#o\n", -1234567);
+    // ft_printf("%#o\n", -1234567);
+    // printf("\n");
 
-    printf("%#X\n", 100000);
-    ft_printf("%#X\n", 100000);
-    printf("\n");
+    // printf("%#X\n", 100000);
+    // ft_printf("%#X\n", 100000);
+    // printf("\n");
 
     // printf("%010u\n", -100);
     // ft_printf("%010u\n", -100);
@@ -47,9 +51,9 @@ int main()
     // ft_printf("%%%4d\n", 13);
     // printf("\n");
 
-    printf("%#x\n", 548045);
-    ft_printf("%#x\n", 548045);
-    printf("\n");
+    // printf("%#x\n", 548045);
+    // ft_printf("%#x\n", 548045);
+    // printf("\n");
 
     // printf("%X\n", -548045);
     // ft_printf("%X\n", -548045);
@@ -95,9 +99,9 @@ int main()
 	// ft_printf("%+.fhey\n", 34.00020049);
     // printf("\n");
 
-	printf("%#.0fhey\n", 34.00020049);
-	ft_printf("%#.0fhey\n", 34.00020049);
-    printf("\n");
+	// printf("%#.0fhey\n", 34.00020049);
+	// ft_printf("%#.0fhey\n", 34.00020049);
+    // printf("\n");
 
 	// printf("%.3fhey\n", 34.00020049);
 	// ft_printf("%.3fhey\n", 34.00020049);

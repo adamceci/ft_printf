@@ -20,15 +20,6 @@
 // Gerer le cas "%03d", -5 --> print 0-5 plutot que -05
 // ADD HEADER DANS LES FICHIERS
 
-void print_data(t_print datas)
-{
-	printf("- = %d\n+ = %d\n# = %d\n0 = %d\n' ' = %d\nfield = %d\npreci = %d\nconv = %c\n",
-		   datas.minus_f, datas.plus_f, datas.hash_f, datas.zero_f, datas.space_f,
-		   datas.field, datas.preci, datas.conversion);
-	printf("modifier = %s\n", datas.modifier);
-	printf("\n");
-}
-
 char	*conv_infos(char **str)
 {
 	int		i;
@@ -48,7 +39,7 @@ void	get_mod(t_print *datas, char *str, int *i)
 	{
 		datas->modifier = ft_strnew(2);
 		datas->modifier[0] = str[*i];
-		datas->modifier[1] = str[*i + 1];
+		datas->modifier[1] = str[*i];
 		(*i)++;
 	}
 	else
@@ -83,7 +74,7 @@ void fill_data(char *str, int *i, t_print *datas)
 		(datas->preci < 0) ? (datas->preci = -1) : (datas->preci);
 	}
 	else if (is_mod(str[*i]))
-		get_mod(datas, &str[*i], i);
+		get_mod(datas, str, i);
 	else if (conversion_char(str[*i]))
 		datas->conversion = str[*i];
 	// else
@@ -102,6 +93,39 @@ void	parse(char *str, t_print *datas)
 		i++;
 	}
 	free(str);
+}
+
+int len_specific_case(t_print *datas, char *str, int tot_len)
+{
+	printf("len = %d\n", tot_len);
+	datas->is_nil = 0;
+	if (datas->conversion == 'X' || datas->conversion == 'o' || datas->conversion == 'd')
+	{
+		if (!ft_strcmp(str, "0"))
+			datas->is_nil = 1;
+		if (datas->is_nil)
+		{
+			if (datas->preci == 0)
+				tot_len -= 1;
+		}
+		else
+		{
+			if (datas->conversion == 'X')
+			{
+				if (datas->hash_f)
+					while ((size_t)tot_len - 2 < ft_strlen(str))
+						tot_len++;
+			}
+			else if (datas->conversion == 'o')
+			{
+				if (datas->hash_f)
+					while ((size_t)tot_len - 1 < ft_strlen(str))
+						tot_len++;
+			}
+		}
+	}
+	printf("len = %d\n", tot_len);
+	return (tot_len);
 }
 
 int		get_tot_len(t_print *datas, char *str)
@@ -126,6 +150,7 @@ int		get_tot_len(t_print *datas, char *str)
 		if (datas->space_f)
 			tot_len++;
 	}
+	tot_len = len_specific_case(datas, str, tot_len);
 	return (tot_len);
 }
 
@@ -173,16 +198,36 @@ void 	put_zeros(char **f_str, int nb_zeros)
 	}
 }
 
-void 	put_value(char **f_str, char *str, int len_str)
+void	put_hash(char **f_str, char *str, t_print *datas)
+{
+	if (datas->hash_f && ft_strcmp(str, "0"))
+	{
+		if (datas->conversion == 'X')
+		{
+			ft_strcpy(*f_str, "0X");
+			(*f_str) += 2;
+		}
+		else if (datas->conversion == 'o')
+		{
+			ft_strcpy(*f_str, "0");
+			(*f_str)++;
+		}
+	}
+}
+
+void 	put_value(char **f_str, char *str, int len_str, t_print *datas)
 {
 	int	i;
 
-	i = 0;
-	while (i < len_str)
+	if (!(datas->is_nil && !datas->preci))
 	{
-		**f_str = str[i];
-		(*f_str)++;
-		i++;
+		i = 0;
+		while (i < len_str)
+		{
+			**f_str = str[i];
+			(*f_str)++;
+			i++;
+		}
 	}
 }
 
@@ -195,8 +240,18 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 	len_str = ft_strlen(str);
 	nb_zeros = (datas->preci > len_str) ? (datas->preci - len_str) : (0);
 	if (datas->zero_f && datas->field > len_str + datas->neg && datas->preci == -1)
+	{
 		nb_zeros = datas->field - len_str - datas->neg;
+		if (datas->conversion == 'X' && datas->hash_f)
+			nb_zeros -= 2;
+		if (datas->conversion == 'o' && datas->hash_f)
+			nb_zeros -= 1;
+	}
 	nb_spaces = (len_f_str - nb_zeros - len_str - datas->plus_f - datas->neg);
+	if (datas->conversion == 'X' && datas->hash_f)
+		nb_spaces -= 2;
+	if (datas->conversion == 'o' && datas->hash_f)
+		nb_spaces -= 1;
 	if (datas->minus_f)
 	{
 		put_plus(&f_str, datas->plus_f);
@@ -207,7 +262,8 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 			put_spaces(&f_str, nb_spaces);
 			nb_spaces--;
 		}
-		put_value(&f_str, str, len_str);
+		put_hash(&f_str, str, datas);
+		put_value(&f_str, str, len_str, datas);
 		put_spaces(&f_str, nb_spaces);
 	}
 	else
@@ -215,8 +271,9 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 		put_spaces(&f_str, nb_spaces);
 		put_plus(&f_str, datas->plus_f);
 		put_minus(&f_str, datas->neg);
+		put_hash(&f_str, str, datas);
 		put_zeros(&f_str, nb_zeros);
-		put_value(&f_str, str, len_str);
+		put_value(&f_str, str, len_str, datas);
 	}
 }
 
@@ -236,7 +293,7 @@ void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 			put_spaces(&f_str, nb_spaces);
 			nb_spaces--;
 		}
-		put_value(&f_str, str, len_str);
+		put_value(&f_str, str, len_str, datas);
 		put_spaces(&f_str, nb_spaces);
 	}
 	else
@@ -247,7 +304,7 @@ void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 		put_minus(&f_str, datas->neg);
 		if (datas->zero_f)
 			put_zeros(&f_str, nb_spaces);
-		put_value(&f_str, str, len_str);
+		put_value(&f_str, str, len_str, datas);
 	}
 }
 
@@ -267,8 +324,6 @@ char	*conv_X(t_print *datas, va_list args)
 		return (NULL);
 	fill(datas, f_str, str, len_f_str);
 	free(str);
-	if (datas->hash_f)
-		f_str = ft_strjoin_free("0X", f_str, 0, 1);
 	return (f_str);
 }
 
@@ -387,8 +442,8 @@ char	*conv_o(t_print *datas, va_list args)
 		return (NULL);
 	fill(datas, f_str, str, len_f_str);
 	free(str);
-	if (datas->hash_f)
-		f_str = ft_strjoin_free("0", f_str, 0, 1);
+	// if (datas->hash_f)
+	// 	f_str = ft_strjoin_free("0", f_str, 0, 1);
 	return (f_str);
 }
 
@@ -419,7 +474,7 @@ void	rewrite_str(t_print *datas, char *str)
 
 	if (datas->preci >= (int)ft_strlen(str))
 		datas->preci = -1;
-	else
+	else if (datas->preci > -1)
 	{
 		i = 0;
 		while (datas->preci > 0)
@@ -472,7 +527,8 @@ char	*conv_x(t_print *datas, va_list args)
 {
 	char	*f_str;
 	char	*s;
-	
+
+	datas->conversion = 'X';
 	if (!(f_str = conv_X(datas, args)))
 		return (NULL);
 	s = ft_strlower(f_str);
@@ -524,7 +580,6 @@ int ft_printf(const char *format, ...)
 					return (-1);
 				}
 				parse(solve_strs.s2, &datas);
-				// print_data(datas);
 				flags_priorities(&datas);
 				solve_strs.s2 = translate(&datas, args);
 				if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, solve_strs.s2, 1, 1)))

@@ -39,6 +39,7 @@ typedef struct	s_print
 	char		conversion;
 	char		*(*f_ptr[256])(struct s_print *datas, va_list args);
 	int			neg;
+	int			is_nil;
 }				t_print;
 
 int				ft_printf(const char *format, ...);
