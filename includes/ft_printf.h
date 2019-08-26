@@ -11,7 +11,9 @@
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
-#define FT_PRINTF_H
+# define FT_PRINTF_H
+
+# define LLLIMIT	-9223372036854775808uLL
 
 #include "libft.h"
 #include <stdarg.h>
@@ -19,7 +21,7 @@
 
 #include <stdio.h> // a enlever !
 
-typedef struct	s_strings
+	typedef struct s_strings
 {
 	char		*s1;
 	char		*s2;
@@ -40,9 +42,11 @@ typedef struct	s_print
 	char		*(*f_ptr[256])(struct s_print *datas, va_list args);
 	int			neg;
 	int			is_nil;
+	int			tot_len;
 }				t_print;
 
 int				ft_printf(const char *format, ...);
+char			*conv_percent(t_print *datas, va_list args);
 char			*conv_X(t_print *datas, va_list args);
 char			*conv_x(t_print *datas, va_list args);
 char			*conv_d(t_print *datas, va_list args);
@@ -51,7 +55,7 @@ char			*conv_o(t_print *datas, va_list args);
 char			*conv_u(t_print *datas, va_list args);
 char			*conv_f(t_print *datas, va_list args);
 char 			*conv_s(t_print *datas, va_list args);
-char 			*conv_c(t_print *datas, va_list args);
+char 			*conv_c(t_print *datas, va_list args, char **solve_str);
 char 			*conv_p(t_print *datas, va_list args);
 void 			init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args));
 void			init_vars(t_strings *solve_strs, t_print *datas);

@@ -2,9 +2,22 @@
 
 int main()
 {
-    printf("%5.0Xhey", 0);
-    printf("\n");
-    ft_printf("%5.0Xhey\n", 0);
+    // ft_printf("@moulitest: %#.ohey %#.0ohey\n", 0, 0);
+    // printf("@moulitest: %#.ohey %#.0ohey\n", 0, 0);
+
+    // ft_printf("null %c and text\n", 0);
+    // printf("null %c and text\n", 0);
+
+    ft_printf("%.d\n", 0);
+    printf("%.d\n", 0);
+
+    // printf("1 : %d\n", ft_printf("null %c and text", 0));
+    // printf("2 : %d\n", printf("null %c and text", 0));
+
+    // ft_printf("null %c and text\n", 0);
+    // printf("null %c and text\n", 0);
+    // printf("moulitest: %.dhey %.0dhey\n", 0, 0);
+    // ft_printf("moulitest: %.dhey %.0dhey\n", 0, 0);
 
     // printf("%d\n", -1000000000000000000);
     // ft_printf("%d\n", -1000000000000000000);
@@ -20,13 +33,13 @@ int main()
     // ft_printf("|%010d|\n", -12);
     // ft_printf("|%-10.5d|\n", -12);
     // ft_printf("|%-010.5d|\n", -12);
-    //
+    
     // printf("|%-+.20d|\n\n", 12);
     // printf("4567 |%-10]5d| plip\n", 12);
     // printf("4567 |%10]5d| plip\n", 12);
 
     // TESTS OK :
-    //
+    
     // printf("%#u\n", -100000000);
     // ft_printf("%#u\n", -100000000);
     // printf("\n");
@@ -129,6 +142,10 @@ int main()
 
     // printf("% -dhey\n", 1234);
     // ft_printf("% -dhey\n", 1234);
+    // printf("\n");
+
+    // printf("%18.20Xhey\n", 0);
+    // ft_printf("%18.20Xhey\n", 0);
     // printf("\n");
 
     // printf("%20.2f\n", 1234.5690);

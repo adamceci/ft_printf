@@ -15,8 +15,8 @@
 void	init_f_ptr(char *(*f_ptr[256])(t_print *datas, va_list args))
 {
 	ft_bzero(f_ptr, 256);
+	f_ptr[37] = &(conv_percent);
 	f_ptr[88] = &(conv_X);
-	f_ptr[99] = &(conv_c);
 	f_ptr[100] = &(conv_d);
 	f_ptr[102] = &(conv_f);
 	f_ptr[105] = &(conv_i);
@@ -32,6 +32,7 @@ void	init_vars(t_strings *solve_strs, t_print *datas)
 	solve_strs->s1 = ft_strnew(0);
 	solve_strs->s2 = NULL;
 	init_f_ptr(datas->f_ptr);
+	datas->tot_len = 0;
 	datas->modifier = NULL;
 	init_struct(datas);
 }
@@ -49,4 +50,5 @@ void	init_struct(t_print *datas)
 	if (datas->modifier)
 		free(datas->modifier);
 	datas->neg = 0;
+	datas->is_nil = 0;
 }

@@ -29,7 +29,7 @@ int	numeric_conversion(char c)
 int	conversion_char(char c)
 {
 	if (c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'o' ||
-			c == 'u' || c == 'x' || c == 'X' || c == 'f')
+			c == 'u' || c == 'x' || c == 'X' || c == 'f' || c == '%')
 		return (1);
 	return (0);
 }
