@@ -99,6 +99,7 @@ t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void				ft_lstappend(t_list *lst, t_list *new);
 char				*ft_strupper(char *str);
 char				*ft_strlower(char *str);
+char				*ft_strlower_free(char *str, int free1);
 int					ft_isspace(int c);
 void				ft_bubble_sort(int *tab, int size);
 int					ft_sqrt(int nb);

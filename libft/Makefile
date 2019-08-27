@@ -86,6 +86,7 @@ SRCS_LIST = ft_memset.c			\
 			ft_lstappend.c		\
 			ft_strupper.c		\
 			ft_strlower.c		\
+			ft_strlower_free.c	\
 			ft_isspace.c		\
 			ft_bubble_sort.c	\
 			ft_sqrt.c			\

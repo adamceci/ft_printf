@@ -44,8 +44,8 @@ void	flags_priorities(t_print *datas)
 		datas->plus_f = 0;
 		datas->zero_f = 0;
 		datas->space_f = 0;
-		if (datas->conversion == 'c' || datas->conversion == 'p')
-			datas->preci = -1;
+		// if (datas->conversion == 'c' || (datas->conversion == 'p' && datas->preci > 0))
+		// 	datas->preci = -1;
 	}
 	if (numeric_conversion(datas->conversion))
 	{

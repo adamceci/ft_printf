@@ -8,8 +8,16 @@ int main()
     // ft_printf("null %c and text\n", 0);
     // printf("null %c and text\n", 0);
 
-    ft_printf("%.d\n", 0);
-    printf("%.d\n", 0);
+    printf("val = %d\n", ft_printf("%.5p\n", 0));
+    printf("val = %d\n", printf("%.5p\n", 0));
+
+    // printf("val = %d\n", ft_printf("%.p\n", 0));
+    // printf("val = %d\n", printf("%.p\n", 0));
+
+
+    // printf("val = %d\n", ft_printf("@moulitest: %05c\n", 1));
+    // printf("val = %d\n", printf("@moulitest: %05c\n", 1));
+
 
     // printf("1 : %d\n", ft_printf("null %c and text", 0));
     // printf("2 : %d\n", printf("null %c and text", 0));
