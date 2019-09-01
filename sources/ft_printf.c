@@ -504,30 +504,57 @@ char	*conv_d(t_print *datas, va_list args)
 char	*ft_ftoa(long double value, int preci)
 {
 	intmax_t	n;
-	intmax_t	decimal;
+	int			decimal;
+	int			i;
 	char		*str;
 	char		*final_str;
 
 	if (preci == 0)
 	{
-		final_str = ft_imttoa(ft_round(value));
+		final_str = ft_imttoa(ft_round((intmax_t)value));
 		return (final_str);
 	}
-	decimal *= ft_round(value * preci * 10);
+	str = NULL;
+	decimal = (intmax_t)value;
 	value -= decimal;
-	// str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
-	while (preci > 0)
+	i = preci;
+	while (i > 0)
 	{
 		value *= 10;
-		if (value < 1.0 && preci > 1)
-			str = ft_strjoin_free(str, "0", 1, 0);	
-		preci--;
+		// printf("value = %Lf\n", value);
+		if (value < 1.0 && i > 1)
+		{
+			str = ft_strjoin_free(str, "0", 1, 0);
+			printf("str = %s\n", str);
+		}
+		// Regler le cas de x.0x...
+		i--;
 	}
-	// printf("str = %s\n", str);
-	// printf("n = %jd\n", n);
 	n = ft_round(value);
-	// printf("n = %jd\n", n);
-	final_str = ft_strjoin_free(str, ft_imttoa(n), 1, 1);
+	printf("n = %jd\n", n);
+	if ((long double)n > value && ft_imttoa(n)[0] == '1')
+	{
+		decimal++;
+		final_str = ft_strjoin_free(ft_itoa(decimal), ".", 1, 0);
+		i = preci;
+		while (i > 0)
+		{
+			final_str = ft_strjoin_free(final_str, "0", 1, 0);
+			i--;
+		}
+	}
+	else
+	{
+		final_str = ft_strjoin_free(ft_itoa(decimal), ".", 1, 0);
+		printf("f_str = %s\n", final_str);
+		if (str)
+		{
+			final_str = ft_strjoin_free(final_str, str, 1, 1);
+			printf("allo\n");
+		}
+		final_str = ft_strjoin_free(final_str, ft_imttoa(n), 1, 1);
+		printf("f_str = %s\n", final_str);
+	}
 	return (final_str);
 }
 
@@ -545,7 +572,6 @@ char	*conv_f(t_print *datas, va_list args)
 	}
 	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
-	printf("str = %s\n", str);
 	len_f_str = get_tot_len(datas, str);
 	if (datas->field != -1 && datas->preci > datas->field)
 		len_f_str += (ft_strlen(ft_itoa((int)value)) + 1);

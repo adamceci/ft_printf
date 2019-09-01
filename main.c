@@ -8,10 +8,18 @@ int main()
     // ft_printf("null %c and text\n", 0);
     // printf("null %c and text\n", 0);
 
-    printf("\n%jd\n", ft_round(1.99998));
-    printf("%jd\n", ft_round(-1.99998));
-    printf("%jd\n", ft_round(0.99998));
-    printf("%jd\n", ft_round(9999.99998));
+    // ft_printf("%.4f\n", 3.9999);
+    // printf("%.4f\n", 3.9999);
+    // printf(" -> ret = %d\n", ft_printf("{%f}{%lf}{%Lf}", 1.42, 1.42, 1.42l));
+    printf(" -> ret = %d\n", ft_printf("{%f}", 1.01));
+    printf(" -> ret = %d\n", printf("{%f}", 1.01));
+    // printf(" -> ret = %d\n", printf("{%Lf}", 1.42l));
+    // printf(" -> ret = %d\n", printf("{%f}{%lf}{%Lf}", 1.42, 1.42, 1.42l));
+
+    // printf("%jd\n", ft_round(1.99998));
+    // printf("%jd\n", ft_round(-1.99998));
+    // printf("%jd\n", ft_round(0.99998));
+    // printf("%jd\n", ft_round(9999.99998));
     // printf("%jd", ft_round(1.99998));
     // printf("%jd", ft_round(1.99998));
 
