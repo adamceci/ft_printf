@@ -8,11 +8,40 @@ int main()
     // ft_printf("null %c and text\n", 0);
     // printf("null %c and text\n", 0);
 
-    printf("val = %d\n", ft_printf("%.5p\n", 0));
-    printf("val = %d\n", printf("%.5p\n", 0));
+    printf("\n%jd\n", ft_round(1.99998));
+    printf("%jd\n", ft_round(-1.99998));
+    printf("%jd\n", ft_round(0.99998));
+    printf("%jd\n", ft_round(9999.99998));
+    // printf("%jd", ft_round(1.99998));
+    // printf("%jd", ft_round(1.99998));
 
-    // printf("val = %d\n", ft_printf("%.p\n", 0));
-    // printf("val = %d\n", printf("%.p\n", 0));
+    // printf("val = %d\n", ft_printf("%f", 3.9999999));
+    // printf("val = %d\n", printf("%f", 3.9999999));
+    // printf("val = %d\n", printf("%x", 1));
+    // printf("val = %d\n", printf("%1x", 1));
+    // printf("val = %d\n", printf("%2x", 1));
+    // printf("val = %d\n", printf("%3x", 1));
+    // printf("val = %d\n", printf("%4x", 1));
+    // printf("val = %d\n", printf("%#x", 1));
+    // printf("val = %d\n", printf("%#1x", 1));
+    // printf("val = %d\n", printf("%#2x", 1));
+    // printf("val = %d\n", printf("%#3x", 1));
+    // printf("val = %d\n", printf("%#4x", 1));
+    // Quand # && len = field --> ajoute soit 1 soit 2 soit rien;
+    // -> Rien : len = field >= strlen(str) + 2;
+    // OU :
+    // strlen(str) + 2 - min_field;
+    // printf("val = %d\n", printf("%.1x", 100));
+    // printf("val = %d\n", printf("%.2x", 100));
+    // printf("val = %d\n", printf("%.3x", 100));
+    // printf("val = %d\n", printf("%.4x", 100));
+    // printf("val = %d\n", printf("%#.1x", 100));
+    // printf("val = %d\n", printf("%#.2x", 100));
+    // printf("val = %d\n", printf("%#.3x", 100));
+    // printf("val = %d\n", printf("%#.4x", 100));
+
+    // printf("val = %d\n", ft_printf("%0c\n", 1));
+    // printf("val = %d\n", printf("%0c\n", 1));
 
 
     // printf("val = %d\n", ft_printf("@moulitest: %05c\n", 1));

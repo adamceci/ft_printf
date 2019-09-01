@@ -12,6 +12,8 @@
 
 #include "libft.h"
 
+#include <stdio.h>
+
 uintmax_t		ft_round(long double value)
 {
 	if ((value - (uintmax_t)value) >= 0.5)

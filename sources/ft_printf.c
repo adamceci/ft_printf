@@ -102,7 +102,8 @@ void	parse(char *str, t_print *datas)
 
 int len_specific_case(t_print *datas, char *str, int tot_len)
 {
-	if (datas->conversion == 'X' || datas->conversion == 'o' || datas->conversion == 'd')
+	if (datas->conversion == 'X' || datas->conversion == 'o' || datas->conversion == 'd' ||
+		datas->conversion == 'p' || datas->conversion == 'u')
 	{
 		if (!ft_strcmp(str, "0"))
 			datas->is_nil = 1;
@@ -112,17 +113,19 @@ int len_specific_case(t_print *datas, char *str, int tot_len)
 			{
 				if (datas->hash_f)
 				{
-					while (tot_len - 2 < (int)ft_strlen(str))
+					if (tot_len == datas->field)
 					{
-						tot_len++;
+						if (tot_len < (int)ft_strlen(str) + 2)
+							tot_len += ft_strlen(str) + 2 - datas->field;
 					}
+					else
+						tot_len += 2;
 				}
 			}
 			else if (datas->conversion == 'o')
 			{
-				if (datas->hash_f)
-					while (tot_len - 1 < (int)ft_strlen(str))
-						tot_len++;
+				if (datas->hash_f && (tot_len < (int)ft_strlen(str)))
+					tot_len++;
 			}
 		}
 		else
@@ -142,7 +145,6 @@ int		get_tot_len(t_print *datas, char *str)
 
 	(str) ? (tot_len = ft_strlen(str) + datas->neg) : (tot_len = 0);
 	// printf("str = %s\n", str);
-	// printf("tot_len = %d\n",  tot_len);
 	if (tot_len < datas->field)
 		tot_len = datas->field;
 	if (tot_len < datas->preci)
@@ -151,9 +153,9 @@ int		get_tot_len(t_print *datas, char *str)
 		if ((!datas->neg && datas->plus_f) || datas->neg)
 			tot_len++;
 	}
-	if (datas->conversion == 'd' && datas->plus_f && datas->field == -1 && datas->preci == -1)
+	if (datas->conversion == 'd' && datas->plus_f && datas->field < tot_len && datas->preci == -1)
 		tot_len++;
-	if (datas->conversion != 'f' && datas->conversion != '%' && datas->space_f)
+	if (datas->conversion != 'f' && datas->conversion != '%' && datas->conversion != 'd' && datas->space_f)
 		tot_len++;
 	if (datas->conversion == 'f' && !datas->neg && datas->field < datas->preci)
 	{
@@ -163,7 +165,6 @@ int		get_tot_len(t_print *datas, char *str)
 			tot_len++;
 	}
 	tot_len = len_specific_case(datas, str, tot_len);
-	// printf("len = %d\n", tot_len);
 	return (tot_len);
 }
 
@@ -211,7 +212,7 @@ void 	put_zeros(char **f_str, int nb_zeros)
 	}
 }
 
-void	put_hash(char **f_str, t_print *datas)
+void	put_hash(char **f_str, t_print *datas, char *str)
 {
 	if (datas->hash_f)
 	{
@@ -220,8 +221,7 @@ void	put_hash(char **f_str, t_print *datas)
 			ft_strcpy(*f_str, "0X");
 			(*f_str) += 2;
 		}
-		/*TOT_LEN > STRLEN(STR) VERIFIER*/
-		else if (datas->conversion == 'o' && (!datas->is_nil || (datas->is_nil && !datas->preci)))
+		else if (datas->conversion == 'o' && ((!datas->is_nil && datas->preci < (int)ft_strlen(str)) || (datas->is_nil && !datas->preci)))
 		{
 			ft_strcpy(*f_str, "0");
 			(*f_str)++;
@@ -229,9 +229,18 @@ void	put_hash(char **f_str, t_print *datas)
 	}
 }
 
+void	put_prefix(char **f_str)
+{
+	**f_str = '0';
+	(*f_str)++;
+	**f_str = 'x';
+	(*f_str)++;
+}
+
 void 	put_value(char **f_str, char *str, int len_str, t_print *datas)
 {
 	int	i;
+
 	if (datas->conversion == '%')
 	{
 		**f_str = '%';
@@ -261,32 +270,38 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 	if (datas->is_nil && !datas->preci)
 		len_str = 0;
 	nb_zeros = (datas->preci > len_str) ? (datas->preci - len_str) : (0);
+	// printf("0 = %d\n", nb_zeros);
 	if (datas->zero_f && datas->field > len_str + datas->neg && datas->preci == -1)
 	{
-		nb_zeros = datas->field - len_str - datas->neg - datas->plus_f;
+		nb_zeros = datas->field - len_str - datas->neg - datas->plus_f - datas->space_f;
+		// printf("0 = %d\n", nb_zeros);
 		if (datas->conversion == 'X' && datas->hash_f)
 			nb_zeros -= 2;
 		if (datas->conversion == 'o' && datas->hash_f)
 			nb_zeros -= 1;
 	}
-	nb_spaces = (len_f_str - nb_zeros - len_str - datas->plus_f - datas->neg);
-	if (datas->conversion == 'X' && datas->hash_f)
+	nb_spaces = len_f_str - nb_zeros - len_str - datas->plus_f - datas->neg;
+	if (datas->conversion == 'X' && datas->hash_f && !datas->is_nil)
 		nb_spaces -= 2;
-	if (datas->conversion == '%' || (datas->conversion == 'o' && datas->hash_f) ||
+	if (datas->conversion == '%' || (datas->conversion == 'o' && datas->hash_f && !datas->is_nil) ||
 		(datas->is_nil && !datas->preci && datas->field < len_str))
 		nb_spaces -= 1;
 	(nb_spaces < 0) ? (nb_spaces = 0) : (0);
+	if (!nb_spaces && datas->space_f)
+		nb_spaces++;
+	// printf("0 = %d - ' ' = %d\n", nb_zeros, nb_spaces);
+	// printf("len = %d\n", len_f_str);
 	if (datas->minus_f)
 	{
 		put_plus(&f_str, datas->plus_f);
 		put_minus(&f_str, datas->neg);
-		put_zeros(&f_str, nb_zeros);
 		if (datas->space_f)
 		{
-			put_spaces(&f_str, nb_spaces);
+			put_spaces(&f_str, 1);
 			nb_spaces--;
 		}
-		put_hash(&f_str, datas);
+		put_zeros(&f_str, nb_zeros);
+		put_hash(&f_str, datas, str);
 		put_value(&f_str, str, len_str, datas);
 		put_spaces(&f_str, nb_spaces);
 	}
@@ -295,7 +310,7 @@ void	fill(t_print *datas, char *f_str, char *str, int len_f_str)
 		put_spaces(&f_str, nb_spaces);
 		put_plus(&f_str, datas->plus_f);
 		put_minus(&f_str, datas->neg);
-		put_hash(&f_str, datas);
+		put_hash(&f_str, datas, str);
 		put_zeros(&f_str, nb_zeros);
 		put_value(&f_str, str, len_str, datas);
 	}
@@ -328,6 +343,35 @@ void	fill_f(t_print *datas, char *f_str, char *str, int len_f_str)
 		put_minus(&f_str, datas->neg);
 		if (datas->zero_f)
 			put_zeros(&f_str, nb_spaces);
+		put_value(&f_str, str, len_str, datas);
+	}
+}
+
+void	fill_p(t_print *datas, char *f_str, char *str, int len_f_str)
+{
+	int	nb_zeros;
+	int	nb_spaces;
+	int	len_str;
+	const int	prefix_size = 2;
+
+	(str) ? (len_str = ft_strlen(str)) : (len_str = 0);
+	nb_zeros = (datas->preci > len_str) ? (datas->preci - len_str) : (0);
+	if (datas->zero_f && datas->field > len_str && datas->preci == -1)
+		nb_zeros = datas->field - len_str - prefix_size;
+	nb_spaces = (len_f_str - nb_zeros - len_str - prefix_size);
+	(nb_spaces < 0) ? (nb_spaces = 0) : (0);
+	if (datas->minus_f)
+	{
+		put_prefix(&f_str);
+		put_zeros(&f_str, nb_zeros);
+		put_value(&f_str, str, len_str, datas);
+		put_spaces(&f_str, nb_spaces);
+	}
+	else
+	{
+		put_spaces(&f_str, nb_spaces);
+		put_prefix(&f_str);
+		put_zeros(&f_str, nb_zeros);
 		put_value(&f_str, str, len_str, datas);
 	}
 }
@@ -372,6 +416,7 @@ char	*conv_X(t_print *datas, va_list args)
 	if (!(str = ft_uimttoa_base(value, 16)))
 		return (NULL);
 	len_f_str = get_tot_len(datas, str);
+	// printf("len = %d\n", len_f_str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
 	fill(datas, f_str, str, len_f_str);
@@ -416,7 +461,7 @@ char	*conv_c(t_print *datas, va_list args, char **solve_str)
 
 void	flag_prio_d(t_print *datas)
 {
-	if (datas->field > 1)
+	if (datas->field > datas->len_str && !datas->zero_f && !datas->minus_f)
 		datas->space_f = 0;
 	if(datas->neg)
 	{
@@ -442,15 +487,16 @@ char	*conv_d(t_print *datas, va_list args)
 		value *= -1;
 		datas->neg = 1;
 	}
-	flag_prio_d(datas);
 	if (!(str = ft_imttoa(value)))
 		return (NULL);
+	datas->len_str = ft_strlen(str);
+	flag_prio_d(datas);
 	len_f_str = get_tot_len(datas, str);
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
 	fill(datas, f_str, str, len_f_str);
 	free(str);
-	//printf("totlen = %d\n", len_f_str);
+	// printf("tot_len = %d\n", len_f_str);
 	datas->tot_len += len_f_str;
 	return (f_str);
 }
@@ -458,6 +504,7 @@ char	*conv_d(t_print *datas, va_list args)
 char	*ft_ftoa(long double value, int preci)
 {
 	intmax_t	n;
+	intmax_t	decimal;
 	char		*str;
 	char		*final_str;
 
@@ -466,9 +513,9 @@ char	*ft_ftoa(long double value, int preci)
 		final_str = ft_imttoa(ft_round(value));
 		return (final_str);
 	}
-	n = (intmax_t)value;
-	value -= n;
-	str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
+	decimal *= ft_round(value * preci * 10);
+	value -= decimal;
+	// str = ft_strjoin_free(ft_imttoa(n), ".", 1, 0);
 	while (preci > 0)
 	{
 		value *= 10;
@@ -476,7 +523,10 @@ char	*ft_ftoa(long double value, int preci)
 			str = ft_strjoin_free(str, "0", 1, 0);	
 		preci--;
 	}
+	// printf("str = %s\n", str);
+	// printf("n = %jd\n", n);
 	n = ft_round(value);
+	// printf("n = %jd\n", n);
 	final_str = ft_strjoin_free(str, ft_imttoa(n), 1, 1);
 	return (final_str);
 }
@@ -495,6 +545,7 @@ char	*conv_f(t_print *datas, va_list args)
 	}
 	if(!(str = ft_ftoa(value, datas->preci)))
 		return(NULL);
+	printf("str = %s\n", str);
 	len_f_str = get_tot_len(datas, str);
 	if (datas->field != -1 && datas->preci > datas->field)
 		len_f_str += (ft_strlen(ft_itoa((int)value)) + 1);
@@ -510,6 +561,7 @@ char	*conv_f(t_print *datas, va_list args)
 
 char	*conv_i(t_print *datas, va_list args)
 {
+	datas->conversion = 'd';
 	return (conv_d(datas, args));
 }
 
@@ -529,40 +581,9 @@ char	*conv_o(t_print *datas, va_list args)
 		return (NULL);
 	fill(datas, f_str, str, len_f_str);
 	free(str);
-	// if (datas->hash_f)
-	// 	f_str = ft_strjoin_free("0", f_str, 0, 1);
 	datas->tot_len += len_f_str;
 	return (f_str);
 }
-
-// char	*conv_p(t_print *datas, va_list args)
-// {
-// 	char		*str;
-// 	char		*str_with_prefix;
-// 	char		*f_str;
-// 	int			len_f_str;
-// 	uintmax_t	value;
-
-// 	value = (uintmax_t)va_arg(args, void *);
-// 	if(!(str = ft_uimttoa_base(value, 16)))
-// 		return (NULL);
-// 	if (!value && !datas->preci)
-// 	{
-// 		str_with_prefix = ft_strdup("0x");
-// 		free(str);
-// 	}
-// 	else
-// 		str_with_prefix = ft_strjoin_free("0x", str, 0, 1);
-// 	str_with_prefix = ft_strlower(str_with_prefix);
-// 	len_f_str = get_tot_len(datas, str_with_prefix);
-// 	printf("len = %d\n", len_f_str);
-// 	if (!(f_str = ft_strnew(len_f_str)))
-// 		return (NULL);
-// 	fill(datas, f_str, str_with_prefix, len_f_str);
-// 	free(str_with_prefix);
-// 	datas->tot_len += len_f_str;
-// 	return (f_str);
-// }
 
 char	*conv_p(t_print *datas, va_list args)
 {
@@ -570,25 +591,24 @@ char	*conv_p(t_print *datas, va_list args)
 	char		*f_str;
 	int			len_f_str;
 	uintmax_t	value;
+	const int	prefix_size = 2;
 
 	value = (uintmax_t)va_arg(args, void *);
 	if(!(str = ft_uimttoa_base(value, 16)))
 		return (NULL);
-	// if (!value && !datas->preci)
 	if (!value && !datas->preci)
 	{
 		free(str);
 		datas->tot_len += 2;
 		return (f_str = ft_strdup("0x"));
 	}
-	// 0x0 et puis on fill donc pas dans le bonne ordre
-	str = ft_strjoin("0x", str);
 	str = ft_strlower_free(str, 1);
 	len_f_str = get_tot_len(datas, str);
-	printf("len = %d\n", len_f_str);
+	if (len_f_str > datas->field)
+		len_f_str += prefix_size;
 	if (!(f_str = ft_strnew(len_f_str)))
 		return (NULL);
-	fill(datas, f_str, str, len_f_str);
+	fill_p(datas, f_str, str, len_f_str);
 	free(str);
 	datas->tot_len += len_f_str;
 	return (f_str);
@@ -723,6 +743,8 @@ int ft_printf(const char *format, ...)
 					return (-1);
 				}
 				parse(solve_strs.s2, &datas);
+				if (datas.conversion == '0')
+					return (0);
 				flags_priorities(&datas);
 				solve_strs.s2 = translate(&datas, args, &solve_strs.s1);
 				if (!(solve_strs.s1 = ft_strjoin_free(solve_strs.s1, solve_strs.s2, 1, 1)))
@@ -732,5 +754,6 @@ int ft_printf(const char *format, ...)
 	}
 	va_end(args);
 	ft_putstr((const char*)solve_strs.s1);
+	((size_t)datas.tot_len < ft_strlen(solve_strs.s1)) ? (datas.tot_len = ft_strlen(solve_strs.s1)) : (0);
 	return (datas.tot_len);
 }

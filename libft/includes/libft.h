@@ -109,5 +109,6 @@ int					get_next_line(const int fd, char **line);
 void				free_2d_array(char **array, unsigned int size);
 int					count_until(const char *str, char c);
 int					get_numberi(const char *str, int *i);
+unsigned int		ft_power(int nb, unsigned int power);
 
 #endif

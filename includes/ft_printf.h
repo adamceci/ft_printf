@@ -43,6 +43,7 @@ typedef struct	s_print
 	int			neg;
 	int			is_nil;
 	int			tot_len;
+	int			len_str;
 }				t_print;
 
 int				ft_printf(const char *format, ...);

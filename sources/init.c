@@ -51,4 +51,5 @@ void	init_struct(t_print *datas)
 		free(datas->modifier);
 	datas->neg = 0;
 	datas->is_nil = 0;
+	datas->len_str = 0;
 }
