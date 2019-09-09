@@ -504,10 +504,11 @@ char	*conv_d(t_print *datas, va_list args)
 char	*ft_ftoa(long double value, int preci)
 {
 	intmax_t	n;
-	int			decimal;
+	long double	decimal;
 	int			i;
 	char		*str;
 	char		*final_str;
+
 
 	if (preci == 0)
 	{
@@ -515,23 +516,28 @@ char	*ft_ftoa(long double value, int preci)
 		return (final_str);
 	}
 	str = NULL;
-	decimal = (intmax_t)value;
+	decimal = (intmax_t)value * 1.0;
+	// printf("decimal = %Lf\n", decimal);
 	value -= decimal;
 	i = preci;
 	while (i > 0)
 	{
-		value *= 10;
-		// printf("value = %Lf\n", value);
+		// printf("val = %Lf\n", value);
+		// printf("diff = %Lf\n", 1.0 - value);
+		value *= 10.0;
+		// int int_value = (int)value;
+		// printf("int_value = %d\n", int_value);
+		// printf("val =  %Lf\n", value);
 		if (value < 1.0 && i > 1)
 		{
+			// A REGLER : CAS 1.001000000 ?????????
+			// printf("vafdsfdsl = %Lf\n", value);
 			str = ft_strjoin_free(str, "0", 1, 0);
-			printf("str = %s\n", str);
+			// printf("str = %s\n", str);
 		}
-		// Regler le cas de x.0x...
 		i--;
 	}
 	n = ft_round(value);
-	printf("n = %jd\n", n);
 	if ((long double)n > value && ft_imttoa(n)[0] == '1')
 	{
 		decimal++;
@@ -546,14 +552,11 @@ char	*ft_ftoa(long double value, int preci)
 	else
 	{
 		final_str = ft_strjoin_free(ft_itoa(decimal), ".", 1, 0);
-		printf("f_str = %s\n", final_str);
 		if (str)
 		{
 			final_str = ft_strjoin_free(final_str, str, 1, 1);
-			printf("allo\n");
 		}
 		final_str = ft_strjoin_free(final_str, ft_imttoa(n), 1, 1);
-		printf("f_str = %s\n", final_str);
 	}
 	return (final_str);
 }

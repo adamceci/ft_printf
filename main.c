@@ -11,8 +11,8 @@ int main()
     // ft_printf("%.4f\n", 3.9999);
     // printf("%.4f\n", 3.9999);
     // printf(" -> ret = %d\n", ft_printf("{%f}{%lf}{%Lf}", 1.42, 1.42, 1.42l));
-    printf(" -> ret = %d\n", ft_printf("{%f}", 1.01));
-    printf(" -> ret = %d\n", printf("{%f}", 1.01));
+    // printf(" -> ret = %d\n", ft_printf("{%.17f}", 1.11));
+    printf(" -> ret = %d\n", printf("{%.Lf}", 1.42L));
     // printf(" -> ret = %d\n", printf("{%Lf}", 1.42l));
     // printf(" -> ret = %d\n", printf("{%f}{%lf}{%Lf}", 1.42, 1.42, 1.42l));
 
